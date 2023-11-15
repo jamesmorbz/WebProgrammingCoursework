@@ -1,0 +1,19 @@
+{% comment %} {% extends "base.html" %} {% endcomment %}
+
+{% block content %}
+<div class="container">
+    <head>
+        <title>{{ headline }}</title>
+    </head>
+    <article>
+        <header>
+            <h1>{{ headline }}</h1>
+            <h5 class="subtitle"> Category: {{ category }}</h5>
+            <h6 class="subtitle"> Author: {{ author }}</h6>
+            <p> Posted: {{ date_time_posted }}</p>
+        </header>
+        <p>{{ contents }}</p>
+        <p><small> Last Edited: {{ date_time_edited }}</small></p>
+    </article>
+</div>
+{% endblock %}

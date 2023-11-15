@@ -23,6 +23,7 @@ class User(AbstractUser):
 
 class Article(models.Model):
     article_id = models.AutoField("article_id", primary_key=True)
+    headline = models.TextField("headline", max_length=200, null=False)
     author = models.CharField("author", max_length=200)
     category = models.TextField(choices=Subjects.choices)
     date_time_posted = models.DateTimeField("time_posted")
