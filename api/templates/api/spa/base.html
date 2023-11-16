@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <!-- Add your CSS and other head content here -->
+</head>
+<body>
+    <header>
+        <!-- Header content, e.g., site title and navigation menu -->
+        <h1>My Website</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about/">About</a></li>
+                <!-- Add other navigation links -->
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <!-- Footer content, e.g., copyright information -->
+        &copy; 2023 My Website
+    </footer>
+</body>
+</html>

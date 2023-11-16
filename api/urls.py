@@ -17,9 +17,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from django.http import HttpResponse
-
-from .views import main_spa
+from .views import main_spa, registration_view, login_view, profile_view, logout_view
 
 urlpatterns = [
     path('', main_spa),
+    path('register/', registration_view, name='register'),
+    path('login/', login_view, name='login'),
+    path('profile/', profile_view, name='profile'),
+    path('logout/', logout_view, name='logout')
 ]
