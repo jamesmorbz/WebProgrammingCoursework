@@ -4,12 +4,8 @@
       <h1>{{ title }}</h1>
     </div>
 
-    <router-link
-      v-for="article in articles"
-      :key="article.id"
-      :to="{ name: 'Article', params: { id: article.id } }"
-      class="blog-article-link"
-    >
+    <router-link v-for="article in articles" :key="article.id" :to="{ name: 'Article', params: { id: article.id } }"
+      class="blog-article-link">
       <BlogArticle :article="article" />
     </router-link>
   </div>

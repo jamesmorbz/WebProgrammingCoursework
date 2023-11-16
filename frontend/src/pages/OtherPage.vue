@@ -1,21 +1,20 @@
 <template>
     <div class="h3">
-      {{ title }}
+        {{ title }}
     </div>
-  </template>
+</template>
   
-  <script lang="ts">
-      import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+    data() {
+        return {
+            title: "Other Page",
+        }
+    }
+})
+</script>
   
-      export default defineComponent({
-          data() {
-              return {
-                  title: "Other Page",
-              }
-          }
-      })
-  </script>
-  
-  <style scoped>
-  </style>
+<style scoped></style>
   
