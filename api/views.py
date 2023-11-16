@@ -164,5 +164,27 @@ def get_comment(request: HttpRequest) -> HttpResponse:
         return response('Error parsing request', 400)
 
 ## PUT
+def update_comment(request: HttpRequest) -> HttpResponse:
+    try:
+        body: dict = json.loads(request.body)
+        if body.get('article_id') == '':
+            return response("Comment ID not defined, rewrite and send request again", 400)
+        
+        comment: Comment = Comment.objects.filter(comment_id=body.get('comment_id'))
+        comment.date_time_edited=datetime.now(),
+        comment.contents=body.get('contents')
+        comment.save()
+        
+        return response("Successfully updated artcommenticle", 200)
+    except:
+        return response("Error parsing comment update, check request again", 400)
 
 ## DELETE
+def delete_comment(request: HttpRequest) -> HttpResponse:
+    try:
+        body: dict = json.loads(request.body)
+        comment: Comment = Comment.objects.filter(comment_id=body.get('comment_id'))
+        comment.delete()
+        return response('Comment deleted successfully', 200)
+    except:
+        return response('Error parsing request', 400)
