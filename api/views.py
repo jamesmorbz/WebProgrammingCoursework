@@ -83,9 +83,9 @@ def create_article(request: HttpRequest) -> HttpResponse:
         return response('Error parsing new article object, check request again', 400)
 
 ## GET
-def get_articles() -> HttpResponse:
+def get_articles() -> JsonResponse:
     all_articles = model_to_dict(Article.objects.all())
-    return HttpResponse({'articles': all_articles, 'code': 200})
+    return JsonResponse(all_articles)
 
 def get_article(request: HttpRequest) -> HttpResponse:
     try:

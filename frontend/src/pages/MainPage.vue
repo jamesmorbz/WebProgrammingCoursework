@@ -31,32 +31,7 @@ export default defineComponent({
       title: "Main Page",
       selectedCategories: [] as string[], // Selected categories for filtering
       showUserFavorites: true, // Flag to show user favorites
-      articles: [
-        {
-          id: 1,
-          title: "Sample Article 1",
-          content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-          author: "John Doe",
-          category: "Technology",
-          date: "2023-11-16",
-        },
-        {
-          id: 2,
-          title: "Sample Article 2",
-          content: "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-          author: "Jane Smith",
-          category: "Science",
-          date: "2023-11-15",
-        },
-        {
-          id: 3,
-          title: "Sample Article 3",
-          content: "Nullam malesuada erat ut turpis. Suspendisse urna nisi, bibendum vel porttitor vel, efficitur ut tellus.",
-          author: "Mark Johnson",
-          category: "Health",
-          date: "2023-11-14",
-        },
-      ],
+      articles: [],
       userFavorites: ["Technology", "Health"], // Example user favorites
     };
   },
@@ -80,6 +55,16 @@ export default defineComponent({
     BlogArticle,
   },
   methods: {
+    fetchElements() {
+      fetch("http://localhost:8000/api/elements/")
+        .then(response => response.json())
+        .then(data => {
+          this.articles = data;
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    },
     toggleCategoryFilter(category: string) {
       const index = this.selectedCategories.indexOf(category);
 
