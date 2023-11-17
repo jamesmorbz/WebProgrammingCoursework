@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .forms import RegistrationForm
@@ -63,70 +63,79 @@ def logout_view(request):
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
-# Article endpoints
-
-## POST
-def create_article(request: HttpRequest) -> HttpResponse:
-    try:
-        body: dict = json.loads(request.body)
-        new_article = Article(
-            headline=body.get('headline'),
-            author=body.get('author'),
-            category=body.get('category'),
-            date_time_posted=datetime.now(),
-            date_time_edited=datetime.now(),
-            contents=body.get('contents')
-        )
-        new_article.save()
-        return response('Article created successfully', 200)
-    except:
-        return response('Error parsing new article object, check request again', 400)
-
-## GET
-def get_articles() -> JsonResponse:
-    all_articles = model_to_dict(Article.objects.all())
+def get_articles(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        try:
+            all_articles = model_to_dict(Article.objects.all())
+            return response('Article created successfully', 200)
+        except:
+            return response('Error parsing new article object, check request again', 400)
+    
+    if request.method == 'POST':
+        try:
+            body: dict = json.loads(request.body)
+            new_article = Article(
+                headline=body.get('headline'),
+                author=body.get('author'),
+                category=body.get('category'),
+                date_time_posted=datetime.now(),
+                date_time_edited=datetime.now(),
+                contents=body.get('contents')
+            )
+            new_article.save()
+            return response('Article created successfully', 200)
+        except:
+            return response('Error parsing new article object, check request again', 400)
+        
     return JsonResponse(all_articles)
 
-def get_article(request: HttpRequest) -> HttpResponse:
+def article(request: HttpRequest, pk) -> JsonResponse:
     try:
-        body: dict = json.loads(request.body)
-        article: Article = Article.objects.filter(article_id=body.get('article_id'))
-        if (article is None): #If get returns empty object
-            return response('Article not found', 404)
-        else:
-            return HttpResponse({'article': article, 
-                                 'code': 200})
-    except:
-        return response('Error parsing request', 400)
-
-## PUT
-def update_article(request: HttpRequest) -> HttpResponse:
-    try:
-        body: dict = json.loads(request.body)
-        if body.get('article_id') == '':
-            return response("Article ID not defined, rewrite and send request again", 400)
-        
-        article: Article = Article.objects.filter(article_id=body.get('article_id'))
-        article.headline=body.get('headline'),
-        article.author=body.get('author'),
-        article.category=body.get('category'),
-        article.date_time_edited=datetime.now(),
-        article.contents=body.get('contents')
-        article.save()
-        
-        return response("Successfully updated article", 200)
-    except:
-        return response("Error parsing article update, check request again", 400)
+        article = Article.objects.get(pk=pk)
+        data = json.loads(request.body)
+    except Exception as e:
+        return JsonResponse({"message":f"ID:{pk} Not in Database or Bad Data Sent in Request", "data": str(request.body)}, status=404)
     
-## DELETE
-def delete_article(request: HttpRequest) -> HttpResponse:
-    try:
-        body: dict = json.loads(request.body)
-        article: Article = Article.objects.filter(article_id=body.get('article_id'))
-        article.delete()
-        return response('Article deleted successfully', 200)
-    except:
-        return response('Error parsing request', 400)
+    if request.method == 'GET':
+        try:
+            body: dict = json.loads(request.body)
+            article: Article = Article.objects.filter(article_id=body.get('article_id'))
+            if (article is None): #If get returns empty object
+                return response('Article not found', 404)
+            else:
+                return HttpResponse({'article': article, 
+                                    'code': 200})
+        except:
+            return response('Error parsing request', 400)
+        
+    
+        
+    if request.method == 'PUT':
+        try:
+            body: dict = json.loads(request.body)
+            if body.get('article_id') == '':
+                return response("Article ID not defined, rewrite and send request again", 400)
+        
+            article: Article = Article.objects.filter(article_id=body.get('article_id'))
+            article.headline=body.get('headline'),
+            article.author=body.get('author'),
+            article.category=body.get('category'),
+            article.date_time_edited=datetime.now(),
+            article.contents=body.get('contents')
+            article.save()
+            
+            return response("Successfully updated article", 200)
+        except:
+            return response("Error parsing article update, check request again", 400)
+    
+    if request.method == 'DELETE':    
+        try:
+            body: dict = json.loads(request.body)
+            article: Article = Article.objects.filter(article_id=body.get('article_id'))
+            article.delete()
+            return response('Article deleted successfully', 200)
+        except:
+            return response('Error parsing request', 400)
     
 
 # Comment endpoints
