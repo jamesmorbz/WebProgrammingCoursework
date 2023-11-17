@@ -18,23 +18,24 @@ class User(AbstractUser):
     date_of_birth = models.DateField("DOB", editable=True, null=True, blank=True)
     profile_picture = models.ImageField("profile_picture", upload_to="uploads", editable=True, null=True, blank=True)
     favourite_categories = models.ManyToManyField(Categories, verbose_name="favourites", editable=True)
+    date_joined = models.DateTimeField("date_joined", auto_now_add=True)
 
-    REQUIRED_FIELDS = ["password"]
+    REQUIRED_FIELDS = ["password", "date_joined"]
 
 class Article(models.Model):
     article_id = models.AutoField("article_id", primary_key=True)
     headline = models.TextField("headline", max_length=200, null=False)
     author = models.CharField("author", max_length=200)
     category = models.TextField(choices=Subjects.choices)
-    date_time_posted = models.DateTimeField(auto_now_add=True)
-    date_time_edited = models.DateTimeField(auto_now=True, default=date_time_posted)
+    date_time_posted = models.DateTimeField("date_time_posted", auto_now_add=True)
+    date_time_edited = models.DateTimeField("date_time_edited", auto_now=True)
     contents = models.TextField("content", editable=True)
 
 class Comment(models.Model):
     comment_id = models.AutoField("comment_id", primary_key=True)
     posted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING) # Maybe this should be SET_NULL but I don't know. Need to see what happens during testing
-    date_time_posted = models.DateTimeField(auto_now_add=True)
-    date_time_edited = models.DateTimeField(auto_now=True, default=date_time_posted)
+    date_time_posted = models.DateTimeField("date_time_posted", auto_now_add=True)
+    date_time_edited = models.DateTimeField("date_time_edited", auto_now=True)
     contents = models.TextField("content", editable=True)
 
 class CommentSection(models.Model): #One article should be able to have many comments
