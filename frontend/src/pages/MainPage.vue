@@ -6,24 +6,16 @@
         <button @click="toggleUserFavorites" :class="{ 'selected': showUserFavorites }">
           User Favorites
         </button>
-        <button
-          v-for="category in uniqueCategories"
-          :key="category"
-          @click="toggleCategoryFilter(category)"
-          :class="{ 'selected': isCategoryFiltered(category) }"
-        >
+        <button v-for="category in uniqueCategories" :key="category" @click="toggleCategoryFilter(category)"
+          :class="{ 'selected': isCategoryFiltered(category) }">
           {{ category }}
         </button>
-        
+
       </div>
     </div>
 
-    <router-link
-      v-for="article in filteredArticles"
-      :key="article.id"
-      :to="{ name: 'Article', params: { id: article.id }}"
-      class="blog-article-link"
-    >
+    <router-link v-for="article in filteredArticles" :key="article.id"
+      :to="{ name: 'Article', params: { id: article.id } }" class="blog-article-link">
       <BlogArticle :article="article" />
     </router-link>
   </div>
@@ -78,11 +70,9 @@ export default defineComponent({
         let favourites = this.articles.filter(article => this.userFavorites.includes(article.category)); // Show articles that match user favorites
         return Array.from(new Set(favourites.concat(articles)));
       }
-
       if (this.selectedCategories.length === 0) {
         return this.articles; // No categories selected, show all articles
       }
-
       return articles;
     },
   },

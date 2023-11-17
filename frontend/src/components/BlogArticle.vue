@@ -30,6 +30,9 @@ export default {
 <style scoped>
 .blog-article {
   margin-bottom: 20px;
+  border: 2px solid #333; /* Adjust thickness as needed */
+  border-radius: 10px; /* Adjust the border radius for rounded corners */
+  padding: 10px;
 }
 
 .meta {
