@@ -19,12 +19,15 @@ from django.urls import include, path
 from django.http import HttpResponse
 from .views import (
     main_spa,
-    registration_view,
-    login_view,
-    profile_view,
-    logout_view,
+    # registration_view,
+    # login_view,
+    # profile_view,
+    # logout_view,
     articles,
     articles_pk,
+    comments,
+    comments_pk,
+    comments_articles_pk,
     search,
 )
 
@@ -36,5 +39,8 @@ urlpatterns = [
     # path('logout/', logout_view, name='logout'),
     path("articles/", articles, name="articles"),
     path("articles/<int:pk>/", articles_pk, name="articles_pk"),
+    path("comments/", comments, name="comments"),
+    path("comments/<int:pk>/", comments_pk, name="comments_pk"),
+    path("articles/<int:pk>/comments/", comments_articles_pk, name="comments_articles_pk"),
     path("search/", search, name="search"),
 ]

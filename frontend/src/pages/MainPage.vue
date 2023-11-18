@@ -28,6 +28,18 @@
     >
       <BlogArticle :article="article" />
     </router-link>
+
+    <div class="comments-timeline">
+        <h3>Comments</h3>
+        <ul>
+          <li v-for="comment in comments" :key="comment.id">
+            <p><strong>{{ comment.author }}</strong> commented on <router-link :to="'/article/' + comment.article_id"><i>{{ comment.article_headline }}</i></router-link></p>
+            <span>{{ comment.date_time_posted }}</span>
+            <p>{{ comment.content }}</p>
+          </li>
+        </ul>
+      </div>
+
   </div>
 </template>
 
@@ -44,6 +56,16 @@ interface Post {
   date: string
 }
 
+interface Comments {
+  id: number
+  article_id: number
+  article_headline: string
+  author: string
+  date_time_posted: string
+  date_time_edited: string
+  content: string
+}
+
 export default defineComponent({
   data() {
     return {
@@ -51,11 +73,13 @@ export default defineComponent({
       selectedCategories: [] as string[], // Selected categories for filtering
       showUserFavorites: false, // Flag to show user favorites
       articles: [] as Post[],
+      comments: [] as Comments[],
       userFavorites: ['Science', 'Technology'] as string[], // Example user favorites
     }
   },
   created() {
-    this.fetchElements()
+    this.fetchArticles()
+    this.fetchComments()
   },
   computed: {
     uniqueCategories() {
@@ -83,11 +107,24 @@ export default defineComponent({
     BlogArticle,
   },
   methods: {
-    fetchElements() {
+    getCommentsForArticle(articleId: number): Comments[] {
+      return this.comments.filter((comment) => comment.article_id === articleId);
+    },
+    fetchArticles() {
       fetch('http://localhost:8000/api/articles/')
         .then((response) => response.json())
         .then((data) => {
           this.articles = data
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    },
+    fetchComments() {
+      fetch('http://localhost:8000/api/comments/')
+        .then((response) => response.json())
+        .then((data) => {
+          this.comments = data
         })
         .catch((error) => {
           console.error('Error:', error)
@@ -156,4 +193,35 @@ export default defineComponent({
 .blog-article-link:hover {
   background-color: #f0f0f0;
 }
+
+.comments-timeline {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.comments-timeline h3 {
+  margin-bottom: 10px;
+}
+
+.comments-timeline ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comments-timeline li {
+  margin-bottom: 15px;
+}
+
+.comments-timeline strong {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.comments-timeline span {
+  font-size: 0.8em;
+  color: #888;
+}
+
 </style>

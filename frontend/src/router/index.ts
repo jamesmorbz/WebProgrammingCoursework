@@ -29,5 +29,11 @@ const router = createRouter({
     },
   ],
 })
+// Starting to look at using pinia
+// router.beforeEach((to) => {
+//   const store = useStore()
+
+//   if (to.meta.requiresAuth && !store.isLoggedIn) return '/login'
+// })
 
 export default router

@@ -18,7 +18,9 @@
         <h3 class="mb-3">Comments</h3>
         <ul class="list-unstyled">
           <li v-for="comment in comments" :key="comment.id" class="mb-2">
-            <strong>{{ comment.user }}:</strong> {{ comment.text }}
+            <strong>{{ comment.author }}:</strong> {{ comment.content }} <br>
+            Posted: {{ comment.date_time_posted }} <br>
+            Last Updated: {{ comment.date_time_edited }}
           </li>
         </ul>
       </div>
@@ -105,6 +107,77 @@
           </div>
         </div>
       </div>
+
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#newCommentModal"
+      >
+        New Comment
+      </button>
+
+      <div
+        class="modal fade"
+        id="newCommentModal"
+        tabindex="-1"
+        aria-labelledby="newCommentModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="newCommentModalLabel">New Comment</h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="newComment" class="my-4">
+                <div class="form-group">
+                  <label for="author">Author:</label>
+                  <input
+                    type="text"
+                    v-model="newCommentData.author"
+                    id="author"
+                    required
+                    class="form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="comment">Comment:</label>
+                  <textarea
+                    v-model="newCommentData.content"
+                    id="comment"
+                    required
+                    class="form-control"
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                @click="newComment"
+                data-bs-dismiss="modal"
+                class="btn btn-primary"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -119,6 +192,14 @@ interface Post {
   date: string
 }
 
+interface Comments {
+  id?: number
+  author: string
+  date_time_posted?: string
+  date_time_edited?: string
+  content: string
+}
+
 export default {
   props: {
     id: {
@@ -129,18 +210,17 @@ export default {
   data() {
     return {
       article: {} as Post,
-      comments: [
-        { id: 1, user: 'Alice', text: 'Great article!' },
-        { id: 2, user: 'Bob', text: 'I learned a lot from this.' },
-      ],
+      comments: [] as Comments[],
       word_count: 0,
       reading_time: 0,
       editedArticle: {} as Post,
+      newCommentData: {} as Comments,
       reloadKey: 0,
     }
   },
   created() {
-    this.fetchElements()
+    this.fetchArticle()
+    this.fetchComments()
   },
   watch: {
     id: function () {
@@ -151,19 +231,30 @@ export default {
   methods: {
     reloadData() {
       this.reloadKey += 1
-      this.fetchElements()
+      this.fetchArticle()
+      this.fetchComments()
     },
     formatDate(dateString: any) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' }
       return new Date(dateString).toLocaleDateString(undefined, options)
     },
-    fetchElements() {
+    fetchArticle() {
       fetch(`http://localhost:8000/api/articles/${this.id}/`)
         .then((response) => response.json())
         .then((data) => {
           this.article = data
           this.wordCount()
           this.readingTime()
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    },
+    fetchComments() {
+      fetch(`http://localhost:8000/api/articles/${this.id}/comments/`)
+        .then((response) => response.json())
+        .then((data) => {
+          this.comments = data
         })
         .catch((error) => {
           console.error('Error:', error)
@@ -184,6 +275,20 @@ export default {
       fetch(`http://localhost:8000/api/articles/${this.id}/`, {
         method: 'PUT',
         body: JSON.stringify(this.editedArticle),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+          this.reloadData()
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    },
+    newComment() {
+      fetch(`http://localhost:8000/api/articles/${this.id}/comments/`, {
+        method: 'POST',
+        body: JSON.stringify(this.newCommentData),
       })
         .then((response) => response.json())
         .then((data) => {
