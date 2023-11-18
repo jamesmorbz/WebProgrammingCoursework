@@ -3,64 +3,80 @@
     <div class="header">
       <h1>{{ title }}</h1>
       <div class="category-buttons">
-        <button @click="toggleUserFavorites" :class="{ 'selected': showUserFavorites }">
+        <button
+          @click="toggleUserFavorites"
+          :class="{ selected: showUserFavorites }"
+        >
           User Favorites
         </button>
-        <button v-for="category in uniqueCategories" :key="category" @click="toggleCategoryFilter(category)"
-          :class="{ 'selected': isCategoryFiltered(category) }">
+        <button
+          v-for="category in uniqueCategories"
+          :key="category"
+          @click="toggleCategoryFilter(category)"
+          :class="{ selected: isCategoryFiltered(category) }"
+        >
           {{ category }}
         </button>
-
       </div>
     </div>
 
-    <router-link v-for="article in filteredArticles" :key="article.id"
-      :to="{ name: 'Article', params: { id: article.id } }" class="blog-article-link">
+    <router-link
+      v-for="article in filteredArticles"
+      :key="article.id"
+      :to="{ name: 'Article', params: { id: article.id } }"
+      class="blog-article-link"
+    >
       <BlogArticle :article="article" />
     </router-link>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import BlogArticle from "@/components/BlogArticle.vue";
+import { defineComponent } from 'vue'
+import BlogArticle from '@/components/BlogArticle.vue'
 
 interface Post {
-  id: number;
-  headline: string;
-  content: string;
-  author: string;
-  category: string;
-  date: string;
+  id: number
+  headline: string
+  content: string
+  author: string
+  category: string
+  date: string
 }
 
 export default defineComponent({
   data() {
     return {
-      title: "Main Page",
+      title: 'Main Page',
       selectedCategories: [] as string[], // Selected categories for filtering
       showUserFavorites: true, // Flag to show user favorites
       articles: [] as Post[],
-      userFavorites: ["Science", "Technology"] as string[], // Example user favorites
-    };
+      userFavorites: ['Science', 'Technology'] as string[], // Example user favorites
+    }
   },
   created() {
-    this.fetchElements();
+    this.fetchElements()
   },
   computed: {
     uniqueCategories() {
-      return Array.from(new Set(this.articles.map(article => article.category))); // Extract unique category values from articles
+      return Array.from(
+        new Set(this.articles.map((article) => article.category)),
+      ) // Extract unique category values from articles
     },
     filteredArticles() {
-      let articles = this.articles.filter(article => this.selectedCategories.includes(article.category));
+      let articles = this.articles.filter((article) =>
+        this.selectedCategories.includes(article.category),
+      )
       if (this.showUserFavorites) {
-        let favourites = this.articles.filter(article => this.userFavorites.includes(article.category)); // Show articles that match user favorites
-        return Array.from(new Set(favourites.concat(articles)));
+        let favourites = this.articles.filter((article) =>
+          this.userFavorites.includes(article.category),
+        ) // Show articles that match user favorites
+        return Array.from(new Set(favourites.concat(articles)))
       }
       if (this.selectedCategories.length === 0) {
-        return this.articles; // No categories selected, show all articles
+        return this.articles // No categories selected, show all articles
       }
-      return articles;
+      return articles
     },
   },
   components: {
@@ -68,32 +84,32 @@ export default defineComponent({
   },
   methods: {
     fetchElements() {
-      fetch("http://localhost:8000/api/articles/")
-        .then(response => response.json())
-        .then(data => {
-          this.articles = data;
+      fetch('http://localhost:8000/api/articles/')
+        .then((response) => response.json())
+        .then((data) => {
+          this.articles = data
         })
-        .catch(error => {
-          console.error("Error:", error);
-        });
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     },
     toggleCategoryFilter(category: string) {
-      const index = this.selectedCategories.indexOf(category);
+      const index = this.selectedCategories.indexOf(category)
 
       if (index === -1) {
-        this.selectedCategories.push(category);
+        this.selectedCategories.push(category)
       } else {
-        this.selectedCategories.splice(index, 1);
+        this.selectedCategories.splice(index, 1)
       }
     },
     isCategoryFiltered(category: string) {
-      return this.selectedCategories.includes(category);
+      return this.selectedCategories.includes(category)
     },
     toggleUserFavorites() {
-      this.showUserFavorites = !this.showUserFavorites;
+      this.showUserFavorites = !this.showUserFavorites
     },
   },
-});
+})
 </script>
 
 <style scoped>
@@ -128,7 +144,7 @@ export default defineComponent({
 }
 
 .category-buttons button.selected {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: #fff;
 }
 

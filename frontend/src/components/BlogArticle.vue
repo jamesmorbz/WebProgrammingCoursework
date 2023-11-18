@@ -7,45 +7,48 @@
       <span class="date">{{ formatDate(article.date) }}</span>
     </p>
     <p>{{ truncateContent(article.content) }}</p>
-    <p v-if="article.content.length > maxContentLength"><i><strong>Click to continue Reading...</strong></i></p>
+    <p v-if="article.content.length > maxContentLength">
+      <i><strong>Click to continue Reading...</strong></i>
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
 interface Post {
-  id: number;
-  headline: string;
-  content: string;
-  author: string;
-  category: string;
-  date: string;
+  id: number
+  headline: string
+  content: string
+  author: string
+  category: string
+  date: string
 }
 
 export default defineComponent({
   data() {
     return {
       maxContentLength: 150,
-    };
+    }
   },
   props: {
     article: {
       type: Object as () => Post, // Specify the type as Post
       required: true,
     },
-    
   },
   methods: {
     formatDate(dateString: string): string {
-      const options = { year: 'numeric', month: 'long', day: 'numeric'};
-      return new Date(dateString).toLocaleDateString(undefined, options);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' }
+      return new Date(dateString).toLocaleDateString(undefined, options)
     },
     truncateContent(content: string): string {
-      return content.length > this.maxContentLength ? content.substring(0, this.maxContentLength): content;
+      return content.length > this.maxContentLength
+        ? content.substring(0, this.maxContentLength)
+        : content
     },
   },
-});
+})
 </script>
 
 <style scoped>
