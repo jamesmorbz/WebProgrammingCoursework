@@ -14,13 +14,14 @@
       <p><strong>Date:</strong> {{ formatDate(article.date) }}</p>
       <p class="mb-4">{{ article.content }}</p>
 
-      <div class="comments-section">
+      <div :key="reloadKey" class="comments-section">
         <h3 class="mb-3">Comments</h3>
         <ul class="list-unstyled">
           <li v-for="comment in comments" :key="comment.id" class="mb-2">
             <strong>{{ comment.author }}:</strong> {{ comment.content }} <br>
             Posted: {{ comment.date_time_posted }} <br>
             Last Updated: {{ comment.date_time_edited }}
+            <button v-if="comment.author==currentUser" @click="deleteComment(comment.id)" class="btn btn-danger">Delete</button>
           </li>
         </ul>
       </div>
@@ -193,10 +194,10 @@ interface Post {
 }
 
 interface Comments {
-  id?: number
+  id: number
   author: string
-  date_time_posted?: string
-  date_time_edited?: string
+  date_time_posted: string
+  date_time_edited: string
   content: string
 }
 
@@ -216,11 +217,13 @@ export default {
       editedArticle: {} as Post,
       newCommentData: {} as Comments,
       reloadKey: 0,
+      currentUser: "morbz1"
     }
   },
   created() {
     this.fetchArticle()
     this.fetchComments()
+    
   },
   watch: {
     id: function () {
@@ -233,6 +236,7 @@ export default {
       this.reloadKey += 1
       this.fetchArticle()
       this.fetchComments()
+      this.newCommentData = {} as Comments
     },
     formatDate(dateString: any) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' }
@@ -255,6 +259,18 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.comments = data
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    },
+    deleteComment(comment_id: Number) {
+      fetch(`http://localhost:8000/api/comments/${comment_id}/`,
+      {method: 'DELETE'})
+        .then((response) => response.json())
+        .then((data: any) => {
+          console.log(data)
+          this.reloadData()
         })
         .catch((error) => {
           console.error('Error:', error)

@@ -26,7 +26,7 @@
       :to="{ name: 'Article', params: { id: article.id } }"
       class="blog-article-link"
     >
-      <BlogArticle :article="article" />
+      <BlogArticle @elementRefresh="reloadData" :article="article" />
     </router-link>
 
     <div class="comments-timeline">
@@ -107,6 +107,10 @@ export default defineComponent({
     BlogArticle,
   },
   methods: {
+    reloadData() {
+      this.fetchArticles()
+      this.fetchComments()
+    },
     getCommentsForArticle(articleId: number): Comments[] {
       return this.comments.filter((comment) => comment.article_id === articleId);
     },

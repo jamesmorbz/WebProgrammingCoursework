@@ -10,6 +10,7 @@
     <p v-if="article.content.length > maxContentLength">
       <i><strong>Click to continue Reading...</strong></i>
     </p>
+    <button v-if="article.author==currentUser" @click="deleteArticle(article.id)" class="btn btn-danger m-2">Delete</button>
   </div>
 </template>
 
@@ -29,6 +30,7 @@ export default defineComponent({
   data() {
     return {
       maxContentLength: 150,
+      currentUser: "Morbinhio"
     }
   },
   props: {
@@ -46,6 +48,19 @@ export default defineComponent({
       return content.length > this.maxContentLength
         ? content.substring(0, this.maxContentLength)
         : content
+    },
+    deleteArticle(article_id: Number) {
+      fetch(`http://localhost:8000/api/articles/${article_id}/`,
+      {method: 'DELETE'})
+        .then((response) => response.json())
+        .then((data: any) => {
+          console.log(data)
+          this.$emit('elementRefresh')
+          this.$router.push("/") //this is a hack for now because I simply can't be fucked to fix it rn.
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     },
   },
 })
