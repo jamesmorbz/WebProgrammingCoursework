@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'api',
 ]
 
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -138,3 +140,16 @@ INTERNAL_IPS = ['127.0.0.1']
 AUTH_USER_MODEL = "api.User"
 
 MEDIA_ROOT = "api/uploads"
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://localhost:5173",
+    "https://*.127.0.0.1",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://localhost:5173",
+    "https://127.0.0.1:5173",
+    "http://127.0.0.1:5173",
+]

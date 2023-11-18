@@ -1,6 +1,6 @@
 <template>
   <div class="blog-article">
-    <h2>{{ article.title }}</h2>
+    <h2>{{ article.headline }}</h2>
     <p class="meta">
       <span class="author">By {{ article.author }}</span>
       <span class="category">{{ article.category }}</span>
@@ -10,21 +10,32 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+interface Post {
+  id: number;
+  headline: string;
+  content: string;
+  author: string;
+  category: string;
+  date: string;
+}
+
+export default defineComponent({
   props: {
     article: {
-      type: Object,
+      type: Object as () => Post, // Specify the type as Post
       required: true,
     },
   },
   methods: {
-    formatDate(dateString) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    formatDate(dateString: string): string {
+      const options = { year: 'numeric', month: 'long', day: 'numeric'};
       return new Date(dateString).toLocaleDateString(undefined, options);
     },
   },
-};
+});
 </script>
 
 <style scoped>

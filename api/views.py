@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Article, Comment
 from datetime import datetime
 from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
 
 def response(message: str, code: int) -> HttpResponse:
     return HttpResponse({'message': message, 'code': code})
@@ -44,7 +45,7 @@ def login_view(request: WSGIRequest):
         form = AuthenticationForm()
     return render(request, 'api/spa/login.html', {'form': form})
 
-@login_required 
+# @login_required 
 def profile_view(request: WSGIRequest):
     user = request.user 
     username = user.username
@@ -63,84 +64,70 @@ def logout_view(request):
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, 'api/spa/index.html', {})
 
+@csrf_exempt
 def get_articles(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
         try:
-            all_articles = model_to_dict(Article.objects.all())
-            return response('Article created successfully', 200)
+            all_articles = []
+            for article in Article.objects.all():
+                doc = {
+                "id": article.article_id,
+                "headline": article.headline,
+                "author": article.author,
+                "category": article.category,
+                "date_time_posted": article.date_time_posted.isoformat()[:-6],
+                "date_time_edited": article.date_time_edited.isoformat()[:-6],
+                "content": article.content,
+                }
+                all_articles.append(doc)
+            return JsonResponse(all_articles, safe=False)
         except:
-            return response('Error parsing new article object, check request again', 400)
+            return JsonResponse({"message":f"Unknown error during database operation", "data": str(request)}, status=500)
     
     if request.method == 'POST':
         try:
-            body: dict = json.loads(request.body)
-            new_article = Article(
+            body = json.loads(request.body)
+            Article.objects.create(
                 headline=body.get('headline'),
                 author=body.get('author'),
                 category=body.get('category'),
-                date_time_posted=datetime.now(),
-                date_time_edited=datetime.now(),
-                contents=body.get('contents')
+                content=body.get('content')
             )
-            new_article.save()
-            return response('Article created successfully', 200)
+            return JsonResponse({"message": "Article created successfully."})
         except:
-            return response('Error parsing new article object, check request again', 400)
-        
-    return JsonResponse(all_articles)
+            return JsonResponse({"message": "Incomplete data. Please provide name, description, price, and is_available."}, status=400,)
 
+@csrf_exempt        
 def article(request: HttpRequest, pk) -> JsonResponse:
     try:
         article = Article.objects.get(pk=pk)
-        data = json.loads(request.body)
+    except Article.DoesNotExist:
+        return JsonResponse({"message":f"ID:{pk} - Not in Database", "data": str(request)}, status=404)
     except Exception as e:
-        return JsonResponse({"message":f"ID:{pk} Not in Database or Bad Data Sent in Request", "data": str(request.body)}, status=404)
+        return JsonResponse({"message":f"ID:{pk} - Unknown error during database operation", "data": str(request)}, status=404)
     
     if request.method == 'GET':
-        try:
-            body: dict = json.loads(request.body)
-            article: Article = Article.objects.filter(article_id=body.get('article_id'))
-            if (article is None): #If get returns empty object
-                return response('Article not found', 404)
-            else:
-                return HttpResponse({'article': article, 
-                                    'code': 200})
-        except:
-            return response('Error parsing request', 400)
-        
-    
+        return JsonResponse(model_to_dict(article))
         
     if request.method == 'PUT':
         try:
-            body: dict = json.loads(request.body)
-            if body.get('article_id') == '':
-                return response("Article ID not defined, rewrite and send request again", 400)
-        
-            article: Article = Article.objects.filter(article_id=body.get('article_id'))
+            body = json.loads(request.body)
             article.headline=body.get('headline'),
             article.author=body.get('author'),
             article.category=body.get('category'),
-            article.date_time_edited=datetime.now(),
-            article.contents=body.get('contents')
+            article.content=body.get('content')
             article.save()
-            
-            return response("Successfully updated article", 200)
+            return JsonResponse({"message":f"Successfully updated article"})
         except:
-            return response("Error parsing article update, check request again", 400)
-    
+            return JsonResponse({"message":f"ID:{pk} - Incomplete data when updating Article"})
+
     if request.method == 'DELETE':    
         try:
-            body: dict = json.loads(request.body)
-            article: Article = Article.objects.filter(article_id=body.get('article_id'))
             article.delete()
-            return response('Article deleted successfully', 200)
+            return JsonResponse({"message": f"ID:{pk} - Element deleted successfully"})
         except:
-            return response('Error parsing request', 400)
+            return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
     
-
-# Comment endpoints
-
-## POST
 def create_comment(request: HttpRequest) -> HttpResponse:
     try:
         body: dict = json.loads(request.body)
@@ -148,7 +135,7 @@ def create_comment(request: HttpRequest) -> HttpResponse:
             posted_by=body.get('posted_by'),
             date_time_posted=datetime.now(),
             date_time_edited=datetime.now(),
-            contents=body.get('contents')
+            content=body.get('content')
         )
         new_comment.save()
         return response('Comment created successfully', 200)
@@ -181,7 +168,7 @@ def update_comment(request: HttpRequest) -> HttpResponse:
         
         comment: Comment = Comment.objects.filter(comment_id=body.get('comment_id'))
         comment.date_time_edited=datetime.now(),
-        comment.contents=body.get('contents')
+        comment.content=body.get('content')
         comment.save()
         
         return response("Successfully updated artcommenticle", 200)

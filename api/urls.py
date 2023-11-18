@@ -21,10 +21,10 @@ from .views import main_spa, registration_view, login_view, profile_view, logout
 
 urlpatterns = [
     path('', main_spa),
-    path('register/', registration_view, name='register'),
-    path('login/', login_view, name='login'),
-    path('profile/', profile_view, name='profile'),
-    path('logout/', logout_view, name='logout'),
-    path("articles/", get_articles, name="get_elements"),
-    path("articles/<int:pk>/", article, name="get_elements"),
+    # path('register/', registration_view, name='register'),
+    # path('login/', login_view, name='login'),
+    # path('profile/', profile_view, name='profile'),
+    # path('logout/', logout_view, name='logout'),
+    path("articles/", get_articles, name="articles"),
+    path("articles/<int:pk>/", article, name="get_articles"),
 ]

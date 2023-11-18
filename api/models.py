@@ -29,14 +29,14 @@ class Article(models.Model):
     category = models.TextField(choices=Subjects.choices)
     date_time_posted = models.DateTimeField("date_time_posted", auto_now_add=True)
     date_time_edited = models.DateTimeField("date_time_edited", auto_now=True)
-    contents = models.TextField("content", editable=True)
+    content = models.TextField("content", editable=True)
 
 class Comment(models.Model):
     comment_id = models.AutoField("comment_id", primary_key=True)
     posted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING) # Maybe this should be SET_NULL but I don't know. Need to see what happens during testing
     date_time_posted = models.DateTimeField("date_time_posted", auto_now_add=True)
     date_time_edited = models.DateTimeField("date_time_edited", auto_now=True)
-    contents = models.TextField("content", editable=True)
+    content = models.TextField("content", editable=True)
 
 class CommentSection(models.Model): #One article should be able to have many comments
     article = models.ForeignKey(Article, on_delete=models.CASCADE)

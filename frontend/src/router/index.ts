@@ -17,7 +17,7 @@ const router = createRouter({
         { path: '/profile', name: 'ProfilePage', component: ProfilePage },
         { path: '/article', name: 'NewArticle', component: NewArticlePage },
         { path: '/article/:id/edit', name: 'EditArticle', component: EditArticlePage },
-        { path: '/article/:id', name: 'Article', component: ArticlePage },
+        { path: '/article/:id', name: 'Article', component: ArticlePage, props: route => ({ id: Number(route.params.id) }) },
     ]
 })
 

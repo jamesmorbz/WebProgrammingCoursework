@@ -25,15 +25,27 @@
 import { defineComponent } from "vue";
 import BlogArticle from "@/components/BlogArticle.vue";
 
+interface Post {
+  id: number;
+  headline: string;
+  content: string;
+  author: string;
+  category: string;
+  date: string;
+}
+
 export default defineComponent({
   data() {
     return {
       title: "Main Page",
       selectedCategories: [] as string[], // Selected categories for filtering
       showUserFavorites: true, // Flag to show user favorites
-      articles: [],
-      userFavorites: ["Technology", "Health"], // Example user favorites
+      articles: [] as Post[],
+      userFavorites: ["Science", "Technology"] as string[], // Example user favorites
     };
+  },
+  created() {
+    this.fetchElements();
   },
   computed: {
     uniqueCategories() {
@@ -56,7 +68,7 @@ export default defineComponent({
   },
   methods: {
     fetchElements() {
-      fetch("http://localhost:8000/api/elements/")
+      fetch("http://localhost:8000/api/articles/")
         .then(response => response.json())
         .then(data => {
           this.articles = data;
