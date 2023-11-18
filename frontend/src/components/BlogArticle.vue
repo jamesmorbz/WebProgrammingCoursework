@@ -30,7 +30,7 @@ export default defineComponent({
   data() {
     return {
       maxContentLength: 150,
-      currentUser: "Morbinhio"
+      currentUser: "morbz1"
     }
   },
   props: {
