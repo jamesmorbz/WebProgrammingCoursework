@@ -25,7 +25,7 @@ from .views import (
     logout_view,
     articles,
     articles_pk,
-    search
+    search,
 )
 
 urlpatterns = [

@@ -13,6 +13,7 @@ from datetime import datetime
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 
+
 def response(message: str, code: int) -> HttpResponse:
     return HttpResponse({"message": message, "code": code})
 
@@ -221,6 +222,7 @@ def delete_comment(request: HttpRequest) -> HttpResponse:
     except:
         return response("Error parsing request", 400)
 
+
 @csrf_exempt
 def search(request: HttpRequest) -> JsonResponse:
     if request.method == "POST":
@@ -230,16 +232,37 @@ def search(request: HttpRequest) -> JsonResponse:
             search_string = json.loads(request.body).get("search_string").lower()
             for article in Article.objects.all():
                 if search_string in article.headline.lower():
-                    headline_matches.append(article)     
+                    headline_matches.append(article)
                 if search_string in article.content.lower():
-                    content_matches.append(article)     
+                    content_matches.append(article)
             if headline_matches:
                 selected_article = random.choice(headline_matches)
-                return JsonResponse({"message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON HEADLINE", "id": f"{selected_article.article_id}"})
+                return JsonResponse(
+                    {
+                        "message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON HEADLINE",
+                        "id": f"{selected_article.article_id}",
+                    }
+                )
             elif content_matches:
                 selected_article = random.choice(content_matches)
-                return JsonResponse({"message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON CONTENT", "id": f"{selected_article.article_id}"})
+                return JsonResponse(
+                    {
+                        "message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON CONTENT",
+                        "id": f"{selected_article.article_id}",
+                    }
+                )
             else:
-               return JsonResponse({"message": f"Couldn't find article matching Search String - {search_string}"}, status=404)
+                return JsonResponse(
+                    {
+                        "message": f"Couldn't find article matching Search String - {search_string}"
+                    },
+                    status=404,
+                )
         except Exception as e:
-            return JsonResponse({"message": f"Couldn't find article matching Search String - {search_string}", "error": str(e)}, status=404)
+            return JsonResponse(
+                {
+                    "message": f"Couldn't find article matching Search String - {search_string}",
+                    "error": str(e),
+                },
+                status=404,
+            )
