@@ -35,7 +35,7 @@ export default defineComponent({
   components: { RouterView },
   data() {
     return {
-      searchQuery: '', // Bind the search query to this variable
+      searchQuery: '',
     }
   },
   methods: {
@@ -48,7 +48,10 @@ export default defineComponent({
         .then((response) => response.json())
         .then((data) => {
           console.log(data)
-          this.$router.push(`/article/${data.id}`)
+          if (data.id !== undefined){
+            this.$router.push(`/article/${data.id}`)
+            this.searchQuery = ''
+          }
         })
         .catch((error) => {
           console.error('Error:', error)

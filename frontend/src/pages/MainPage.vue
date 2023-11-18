@@ -49,7 +49,7 @@ export default defineComponent({
     return {
       title: 'Main Page',
       selectedCategories: [] as string[], // Selected categories for filtering
-      showUserFavorites: true, // Flag to show user favorites
+      showUserFavorites: false, // Flag to show user favorites
       articles: [] as Post[],
       userFavorites: ['Science', 'Technology'] as string[], // Example user favorites
     }
