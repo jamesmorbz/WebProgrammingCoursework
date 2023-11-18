@@ -23,8 +23,9 @@ from .views import (
     login_view,
     profile_view,
     logout_view,
-    get_articles,
-    article,
+    articles,
+    articles_pk,
+    search
 )
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     # path('login/', login_view, name='login'),
     # path('profile/', profile_view, name='profile'),
     # path('logout/', logout_view, name='logout'),
-    path("articles/", get_articles, name="articles"),
-    path("articles/<int:pk>/", article, name="get_articles"),
+    path("articles/", articles, name="articles"),
+    path("articles/<int:pk>/", articles_pk, name="articles_pk"),
+    path("search/", search, name="search"),
 ]

@@ -1,4 +1,6 @@
 import json
+import random
+
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -10,7 +12,6 @@ from .models import Article, Comment
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
-
 
 def response(message: str, code: int) -> HttpResponse:
     return HttpResponse({"message": message, "code": code})
@@ -72,7 +73,7 @@ def main_spa(request: HttpRequest) -> HttpResponse:
 
 
 @csrf_exempt
-def get_articles(request: HttpRequest) -> JsonResponse:
+def articles(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
         try:
             all_articles = []
@@ -117,7 +118,7 @@ def get_articles(request: HttpRequest) -> JsonResponse:
 
 
 @csrf_exempt
-def article(request: HttpRequest, pk) -> JsonResponse:
+def articles_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
         article = Article.objects.get(pk=pk)
     except Article.DoesNotExist:
@@ -139,9 +140,9 @@ def article(request: HttpRequest, pk) -> JsonResponse:
     if request.method == "PUT":
         try:
             body = json.loads(request.body)
-            article.headline = (body.get("headline"),)
-            article.author = (body.get("author"),)
-            article.category = (body.get("category"),)
+            article.headline = body.get("headline")
+            article.author = body.get("author")
+            article.category = body.get("category")
             article.content = body.get("content")
             article.save()
             return JsonResponse({"message": f"Successfully updated article"})
@@ -219,3 +220,26 @@ def delete_comment(request: HttpRequest) -> HttpResponse:
         return response("Comment deleted successfully", 200)
     except:
         return response("Error parsing request", 400)
+
+@csrf_exempt
+def search(request: HttpRequest) -> JsonResponse:
+    if request.method == "POST":
+        try:
+            headline_matches = []
+            content_matches = []
+            search_string = json.loads(request.body).get("search_string").lower()
+            for article in Article.objects.all():
+                if search_string in article.headline.lower():
+                    headline_matches.append(article)     
+                if search_string in article.content.lower():
+                    content_matches.append(article)     
+            if headline_matches:
+                selected_article = random.choice(headline_matches)
+                return JsonResponse({"message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON HEADLINE", "id": f"{selected_article.article_id}"})
+            elif content_matches:
+                selected_article = random.choice(content_matches)
+                return JsonResponse({"message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON CONTENT", "id": f"{selected_article.article_id}"})
+            else:
+               return JsonResponse({"message": f"Couldn't find article matching Search String - {search_string}"}, status=404)
+        except Exception as e:
+            return JsonResponse({"message": f"Couldn't find article matching Search String - {search_string}", "error": str(e)}, status=404)

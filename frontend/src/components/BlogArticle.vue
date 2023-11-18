@@ -6,7 +6,8 @@
       <span class="category">{{ article.category }}</span>
       <span class="date">{{ formatDate(article.date) }}</span>
     </p>
-    <p>{{ article.content }}</p>
+    <p>{{ truncateContent(article.content) }}</p>
+    <p v-if="article.content.length > maxContentLength"><i><strong>Click to continue Reading...</strong></i></p>
   </div>
 </template>
 
@@ -23,16 +24,25 @@ interface Post {
 }
 
 export default defineComponent({
+  data() {
+    return {
+      maxContentLength: 150,
+    };
+  },
   props: {
     article: {
       type: Object as () => Post, // Specify the type as Post
       required: true,
     },
+    
   },
   methods: {
     formatDate(dateString: string): string {
       const options = { year: 'numeric', month: 'long', day: 'numeric'};
       return new Date(dateString).toLocaleDateString(undefined, options);
+    },
+    truncateContent(content: string): string {
+      return content.length > this.maxContentLength ? content.substring(0, this.maxContentLength): content;
     },
   },
 });

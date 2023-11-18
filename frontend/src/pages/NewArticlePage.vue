@@ -6,7 +6,7 @@
 
         <form @submit.prevent="submitArticle" class="article-form">
             <label for="title">Title:</label>
-            <input v-model="newArticle.title" type="text" id="title" required />
+            <input v-model="newArticle.headline" type="text" id="headline" required />
 
             <label for="author">Author:</label>
             <input v-model="newArticle.author" type="text" id="author" required />
@@ -16,6 +16,8 @@
 
             <label for="content">Content:</label>
             <textarea v-model="newArticle.content" id="content" required></textarea>
+            
+            <p>Current Word Count: {{ currentWordCount }} - Character Count: {{ currentCharacterCount }}</p>
 
             <button type="submit">Create Article</button>
         </form>
@@ -29,22 +31,36 @@ export default defineComponent({
     data() {
         return {
             newArticle: {
-                title: "",
+                headline: "",
                 author: "",
                 category: "",
                 content: "",
             },
         };
     },
+    computed: {
+        currentWordCount() {
+            return this.newArticle.content.split(" ").filter(word => word !== '').length;
+        },
+        currentCharacterCount() {
+            return this.newArticle.content.length;
+        }
+    },
     methods: {
         submitArticle() {
+                fetch("http://localhost:8000/api/articles/", {
+                    method: "POST",
+                    body: JSON.stringify(this.newArticle)
+                })
+                    .then(response => response.json())
+                    .then(data => { console.log(data)
+                    })
+                    .catch(error => {
+                    console.error("Error:", error);
+                    });
+
             console.log("New article submitted:", this.newArticle);
-            this.newArticle = {
-                title: "",
-                author: "",
-                category: "",
-                content: "",
-            };
+            this.$router.push('/') // redirects you back to the main page
         },
     },
 });
