@@ -3,42 +3,32 @@
     <div class="header">
       <h1>{{ title }}</h1>
       <div class="category-buttons">
-        <button
-          @click="toggleUserFavorites"
-          :class="{ selected: showUserFavorites }"
-        >
+        <button @click="toggleUserFavorites" :class="{ selected: showUserFavorites }">
           User Favorites
         </button>
-        <button
-          v-for="category in uniqueCategories"
-          :key="category"
-          @click="toggleCategoryFilter(category)"
-          :class="{ selected: isCategoryFiltered(category) }"
-        >
+        <button v-for="category in uniqueCategories" :key="category" @click="toggleCategoryFilter(category)"
+          :class="{ selected: isCategoryFiltered(category) }">
           {{ category }}
         </button>
       </div>
     </div>
 
-    <router-link
-      v-for="article in filteredArticles"
-      :key="article.id"
-      :to="{ name: 'Article', params: { id: article.id } }"
-      class="blog-article-link"
-    >
+    <router-link v-for="article in filteredArticles" :key="article.id"
+      :to="{ name: 'Article', params: { id: article.id } }" class="blog-article-link">
       <BlogArticle @elementRefresh="reloadData" :article="article" />
     </router-link>
 
     <div class="comments-timeline">
-        <h3>Comments</h3>
-        <ul>
-          <li v-for="comment in comments" :key="comment.id">
-            <p><strong>{{ comment.author }}</strong> commented on <router-link :to="'/article/' + comment.article_id"><i>{{ comment.article_headline }}</i></router-link></p>
-            <span>{{ comment.date_time_posted }}</span>
-            <p>{{ comment.content }}</p>
-          </li>
-        </ul>
-      </div>
+      <h3>Comments</h3>
+      <ul>
+        <li v-for="comment in comments" :key="comment.id">
+          <p><strong>{{ comment.author }}</strong> commented on <router-link :to="'/article/' + comment.article_id"><i>{{
+            comment.article_headline }}</i></router-link></p>
+          <span>{{ comment.date_time_posted }}</span>
+          <p>{{ comment.content }}</p>
+        </li>
+      </ul>
+    </div>
 
   </div>
 </template>
@@ -227,5 +217,4 @@ export default defineComponent({
   font-size: 0.8em;
   color: #888;
 }
-
 </style>

@@ -10,7 +10,8 @@
     <p v-if="article.content.length > maxContentLength">
       <i><strong>Click to continue Reading...</strong></i>
     </p>
-    <button v-if="article.author==currentUser" @click="deleteArticle(article.id)" class="btn btn-danger m-2">Delete</button>
+    <button v-if="article.author == currentUser" @click="deleteArticle(article.id)"
+      class="btn btn-danger m-2">Delete</button>
   </div>
 </template>
 
@@ -30,7 +31,7 @@ export default defineComponent({
   data() {
     return {
       maxContentLength: 150,
-      currentUser: "morbz1"
+      currentUser: "john1"
     }
   },
   props: {
@@ -40,9 +41,12 @@ export default defineComponent({
     },
   },
   methods: {
-    formatDate(dateString: string): string {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' }
-      return new Date(dateString).toLocaleDateString(undefined, options)
+    formatDate(dateString: string | undefined): string {
+      if (dateString === undefined) {
+        return 'Invalid date';
+      }
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
     },
     truncateContent(content: string): string {
       return content.length > this.maxContentLength
@@ -51,7 +55,7 @@ export default defineComponent({
     },
     deleteArticle(article_id: Number) {
       fetch(`http://localhost:8000/api/articles/${article_id}/`,
-      {method: 'DELETE'})
+        { method: 'DELETE' })
         .then((response) => response.json())
         .then((data: any) => {
           console.log(data)
@@ -69,8 +73,10 @@ export default defineComponent({
 <style scoped>
 .blog-article {
   margin-bottom: 20px;
-  border: 2px solid #333; /* Adjust thickness as needed */
-  border-radius: 10px; /* Adjust the border radius for rounded corners */
+  border: 2px solid #333;
+  /* Adjust thickness as needed */
+  border-radius: 10px;
+  /* Adjust the border radius for rounded corners */
   padding: 10px;
 }
 

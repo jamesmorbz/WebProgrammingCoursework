@@ -21,87 +21,46 @@
             <strong>{{ comment.author }}:</strong> {{ comment.content }} <br>
             Posted: {{ comment.date_time_posted }} <br>
             Last Updated: {{ comment.date_time_edited }}
-            <button v-if="comment.author==currentUser" @click="deleteComment(comment.id)" class="btn btn-danger">Delete</button>
+            <button v-if="comment.author == currentUser" @click="deleteComment(comment.id)"
+              class="btn btn-danger">Delete</button>
           </li>
         </ul>
       </div>
 
       <!-- Edit Post button to open the modal -->
-      <button
-        @click="openEditModal"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#editModal"
-      >
+      <button @click="openEditModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
         Edit Post
       </button>
 
       <!-- Edit Modal -->
-      <div
-        class="modal fade"
-        id="editModal"
-        tabindex="-1"
-        aria-labelledby="editModalLabel"
-        aria-hidden="true"
-      >
+      <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="editModalLabel">Edit Article</h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="editPost" class="my-4">
                 <div class="form-group">
                   <label for="editHeadline">Edit Headline:</label>
-                  <input
-                    type="text"
-                    v-model="editedArticle.headline"
-                    id="editHeadline"
-                    required
-                    class="form-control"
-                  />
+                  <input type="text" v-model="editedArticle.headline" id="editHeadline" required class="form-control" />
                 </div>
                 <div class="form-group">
                   <label for="editCategory">Edit Category:</label>
-                  <input
-                    type="text"
-                    v-model="editedArticle.category"
-                    id="editCategory"
-                    required
-                    class="form-control"
-                  />
+                  <input type="text" v-model="editedArticle.category" id="editCategory" required class="form-control" />
                 </div>
                 <div class="form-group">
                   <label for="editContent">Edit Content:</label>
-                  <textarea
-                    v-model="editedArticle.content"
-                    id="editContent"
-                    required
-                    class="form-control"
-                  ></textarea>
+                  <textarea v-model="editedArticle.content" id="editContent" required class="form-control"></textarea>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Close
               </button>
-              <button
-                type="submit"
-                @click="editPost"
-                data-bs-dismiss="modal"
-                class="btn btn-primary"
-              >
+              <button type="submit" @click="editPost" data-bs-dismiss="modal" class="btn btn-primary">
                 Save Changes
               </button>
             </div>
@@ -109,69 +68,35 @@
         </div>
       </div>
 
-      <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#newCommentModal"
-      >
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCommentModal">
         New Comment
       </button>
 
-      <div
-        class="modal fade"
-        id="newCommentModal"
-        tabindex="-1"
-        aria-labelledby="newCommentModalLabel"
-        aria-hidden="true"
-      >
+      <div class="modal fade" id="newCommentModal" tabindex="-1" aria-labelledby="newCommentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="newCommentModalLabel">New Comment</h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="newComment" class="my-4">
                 <div class="form-group">
                   <label for="author">Author:</label>
-                  <input
-                    type="text"
-                    v-model="newCommentData.author"
-                    id="author"
-                    required
-                    class="form-control"
-                  />
+                  <input type="text" v-model="newCommentData.author" id="author" required class="form-control" />
                 </div>
                 <div class="form-group">
                   <label for="comment">Comment:</label>
-                  <textarea
-                    v-model="newCommentData.content"
-                    id="comment"
-                    required
-                    class="form-control"
-                  ></textarea>
+                  <textarea v-model="newCommentData.content" id="comment" required class="form-control"></textarea>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Close
               </button>
-              <button
-                type="submit"
-                @click="newComment"
-                data-bs-dismiss="modal"
-                class="btn btn-primary"
-              >
+              <button type="submit" @click="newComment" data-bs-dismiss="modal" class="btn btn-primary">
                 Save Changes
               </button>
             </div>
@@ -223,7 +148,7 @@ export default {
   created() {
     this.fetchArticle()
     this.fetchComments()
-    
+
   },
   watch: {
     id: function () {
@@ -239,20 +164,23 @@ export default {
       this.newCommentData = {} as Comments
     },
     formatDate(dateString: any) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' }
-      return new Date(dateString).toLocaleDateString(undefined, options)
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const parsedDate = new Date(dateString);
+      return parsedDate.toLocaleDateString(undefined, options);
     },
-    fetchArticle() {
+    async fetchArticle() {
       fetch(`http://localhost:8000/api/articles/${this.id}/`)
         .then((response) => response.json())
         .then((data) => {
-          this.article = data
-          this.wordCount()
-          this.readingTime()
+          // Handle the data
+          this.article = data;
+          this.wordCount();
+          this.readingTime();
         })
         .catch((error) => {
-          console.error('Error:', error)
-        })
+          // Log and handle errors
+          console.error('Error:', error);
+        });
     },
     fetchComments() {
       fetch(`http://localhost:8000/api/articles/${this.id}/comments/`)
@@ -266,7 +194,7 @@ export default {
     },
     deleteComment(comment_id: Number) {
       fetch(`http://localhost:8000/api/comments/${comment_id}/`,
-      {method: 'DELETE'})
+        { method: 'DELETE' })
         .then((response) => response.json())
         .then((data: any) => {
           console.log(data)

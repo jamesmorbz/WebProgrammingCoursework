@@ -75,14 +75,14 @@ def articles(request: HttpRequest) -> JsonResponse:
         try:
             all_articles = []
             for article in Article.objects.all():
+                date_time_edited_iso = article.date_time_edited.isoformat()
                 doc = {
                     "id": article.article_id,
                     "headline": article.headline,
+                    "content": article.content,
                     "author": article.author,
                     "category": article.category,
-                    "date_time_posted": article.date_time_posted.isoformat()[:-6],
-                    "date_time_edited": article.date_time_edited.isoformat()[:-6],
-                    "content": article.content,
+                    "date": date_time_edited_iso,
                 }
                 all_articles.append(doc)
             return JsonResponse(all_articles, safe=False)
@@ -108,7 +108,7 @@ def articles(request: HttpRequest) -> JsonResponse:
         except:
             return JsonResponse(
                 {
-                    "message": "Incomplete data. Please provide name, description, price, and is_available."
+                    "message": "Error creating article."
                 },
                 status=400,
             )
@@ -132,16 +132,25 @@ def articles_pk(request: HttpRequest, pk) -> JsonResponse:
         )
 
     if request.method == "GET":
-        return JsonResponse(model_to_dict(article))
+        date_edited_iso = article.date_time_edited.isoformat()
+        article_dict = {
+            'article_id': article.article_id,
+            'headline': article.headline,
+            'author': article.author,
+            'category': article.category,
+            'content': article.content,
+            'date': date_edited_iso,
+        }
+        return JsonResponse(article_dict)
 
     if request.method == "PUT":
         try:
             body = json.loads(request.body)
             article.headline = body.get("headline")
-            article.author = body.get("author")
             article.category = body.get("category")
             article.content = body.get("content")
             article.save()
+            print("update article")
             return JsonResponse({"message": f"Successfully updated article"})
         except:
             return JsonResponse(

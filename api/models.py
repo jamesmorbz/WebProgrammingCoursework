@@ -35,8 +35,8 @@ class Article(models.Model):
     headline = models.TextField("headline", max_length=200)
     author = models.CharField("author", max_length=200)
     category = models.TextField(choices=Subjects.choices)
-    date_time_posted = models.DateTimeField("date_time_posted", auto_now_add=True)
-    date_time_edited = models.DateTimeField("date_time_edited", auto_now=True)
+    date_time_posted = models.DateTimeField(auto_now_add=True)
+    date_time_edited = models.DateTimeField(auto_now=True)
     content = models.TextField("content", editable=True)
 
 
