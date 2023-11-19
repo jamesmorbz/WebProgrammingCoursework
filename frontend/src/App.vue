@@ -13,7 +13,7 @@
       <router-link class="nav-link" :to="{ name: 'ProfilePage' }">
         <i class="fas fa-user-circle"></i> Profile Page
         <!-- need ajax request to get user image -->
-        <img class="profile-preview" src="https://via.placeholder.com/30" alt="Profile Preview" />
+        <img class="profile-preview" :src="userAvatar" alt="Profile Preview" />
       </router-link>
 
     </div>
@@ -24,6 +24,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
+import testImage from './assets/test-avatar.jpg'
 
 export default defineComponent({
   components: { RouterView },
@@ -32,6 +33,9 @@ export default defineComponent({
       searchQuery: '',
       userAvatar: '',
     }
+  },
+  mounted() {
+    this.getUserAvatar()
   },
   methods: {
     performSearch() {
@@ -54,13 +58,14 @@ export default defineComponent({
     },
     async getUserAvatar() {
       try {
-        const response = await fetch('getuseravatarurl', {
-          method: 'GET',
-        });
-        if (response.ok) {
-          const data = await response.json();
-          this.userAvatar = data
-        }
+        // const response = await fetch('getuseravatarurl', {
+        //   method: 'GET',
+        // });
+        // if (response.ok) {
+        //   const data = await response.json();
+        //   this.userAvatar = data
+        // }
+        this.userAvatar = testImage
       } catch (error) {
         console.log('Error fetching user avatar', error);
       }
