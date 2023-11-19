@@ -8,20 +8,14 @@
         New Article
       </router-link>
       <div class="search-bar">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search articles..."
-          @keyup.enter="performSearch"
-        />
+        <input v-model="searchQuery" type="text" placeholder="Search articles..." @keyup.enter="performSearch" />
       </div>
       <router-link class="nav-link" :to="{ name: 'ProfilePage' }">
         <i class="fas fa-user-circle"></i> Profile Page
-        <img
-          class="profile-preview"
-          src="https://via.placeholder.com/30"
-          alt="Profile Preview"
-      /></router-link>
+        <!-- need ajax request to get user image -->
+        <img class="profile-preview" src="https://via.placeholder.com/30" alt="Profile Preview" />
+      </router-link>
+
     </div>
     <RouterView class="flex-shrink-0" />
   </main>
@@ -36,6 +30,7 @@ export default defineComponent({
   data() {
     return {
       searchQuery: '',
+      userAvatar: '',
     }
   },
   methods: {
@@ -48,7 +43,7 @@ export default defineComponent({
         .then((response) => response.json())
         .then((data) => {
           console.log(data)
-          if (data.id !== undefined){
+          if (data.id !== undefined) {
             this.$router.push(`/article/${data.id}`)
             this.searchQuery = ''
           }
@@ -56,6 +51,19 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error:', error)
         })
+    },
+    async getUserAvatar() {
+      try {
+        const response = await fetch('getuseravatarurl', {
+          method: 'GET',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          this.userAvatar = data
+        }
+      } catch (error) {
+        console.log('Error fetching user avatar', error);
+      }
     },
   },
 })
