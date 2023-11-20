@@ -71,48 +71,47 @@ def main_spa(request: HttpRequest) -> HttpResponse:
 
 @csrf_exempt
 def articles(request: HttpRequest) -> JsonResponse:
-    match request.method:
-        case "GET":
-            try:
-                all_articles = []
-                for article in Article.objects.all():
-                    date_time_edited_iso = article.date_time_edited.isoformat()
-                    doc = {
-                        "id": article.article_id,
-                        "headline": article.headline,
-                        "content": article.content,
-                        "author": article.author,
-                        "category": article.category,
-                        "date": date_time_edited_iso,
-                    }
-                    all_articles.append(doc)
-                return JsonResponse(all_articles, safe=False)
-            except:
-                return JsonResponse(
-                    {
-                        "message": f"Unknown error during database operation",
-                        "data": str(request),
-                    },
-                    status=500,
-                )
+    if request.method == "GET":
+        try:
+            all_articles = []
+            for article in Article.objects.all():
+                date_time_edited_iso = article.date_time_edited.isoformat()
+                doc = {
+                    "id": article.article_id,
+                    "headline": article.headline,
+                    "content": article.content,
+                    "author": article.author,
+                    "category": article.category,
+                    "date": date_time_edited_iso,
+                }
+                all_articles.append(doc)
+            return JsonResponse(all_articles, safe=False)
+        except:
+            return JsonResponse(
+                {
+                    "message": f"Unknown error during database operation",
+                    "data": str(request),
+                },
+                status=500,
+            )
 
-        case "POST":
-            try:
-                body = json.loads(request.body)
-                Article.objects.create(
-                    headline=body.get("headline"),
-                    author=body.get("author"),
-                    category=body.get("category"),
-                    content=body.get("content"),
-                )
-                return JsonResponse({"message": "Article created successfully."})
-            except:
-                return JsonResponse(
-                    {
-                        "message": "Error creating article."
-                    },
-                    status=400,
-                )
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+            Article.objects.create(
+                headline=body.get("headline"),
+                author=body.get("author"),
+                category=body.get("category"),
+                content=body.get("content"),
+            )
+            return JsonResponse({"message": "Article created successfully."})
+        except:
+            return JsonResponse(
+                {
+                    "message": "Error creating article."
+                },
+                status=400,
+            )
 
 @csrf_exempt
 def articles_pk(request: HttpRequest, pk) -> JsonResponse:
@@ -131,39 +130,38 @@ def articles_pk(request: HttpRequest, pk) -> JsonResponse:
             status=404,
         )
 
-    match request.method:
-        case "GET":
-            date_edited_iso = article.date_time_edited.isoformat()
-            article_dict = {
-                'article_id': article.article_id,
-                'headline': article.headline,
-                'author': article.author,
-                'category': article.category,
-                'content': article.content,
-                'date': date_edited_iso,
-            }
-            return JsonResponse(article_dict)
+    if request.method == "GET":
+        date_edited_iso = article.date_time_edited.isoformat()
+        article_dict = {
+            'article_id': article.article_id,
+            'headline': article.headline,
+            'author': article.author,
+            'category': article.category,
+            'content': article.content,
+            'date': date_edited_iso,
+        }
+        return JsonResponse(article_dict)
 
-        case "PUT":
-            try:
-                body = json.loads(request.body)
-                article.headline = body.get("headline")
-                article.category = body.get("category")
-                article.content = body.get("content")
-                article.save()
-                print("update article")
-                return JsonResponse({"message": f"Successfully updated article"})
-            except:
-                return JsonResponse(
-                    {"message": f"ID:{pk} - Incomplete data when updating Article"}
-                )
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+            article.headline = body.get("headline")
+            article.category = body.get("category")
+            article.content = body.get("content")
+            article.save()
+            print("update article")
+            return JsonResponse({"message": f"Successfully updated article"})
+        except:
+            return JsonResponse(
+                {"message": f"ID:{pk} - Incomplete data when updating Article"}
+            )
 
-        case "DELETE":
-            try:
-                article.delete()
-                return JsonResponse({"message": f"ID:{pk} - Element deleted successfully"})
-            except:
-                return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
+    if request.method == "DELETE":
+        try:
+            article.delete()
+            return JsonResponse({"message": f"ID:{pk} - Element deleted successfully"})
+        except:
+            return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
 
 @csrf_exempt
 def comments(request: HttpRequest) -> JsonResponse:
@@ -200,34 +198,32 @@ def comments_pk(request: HttpRequest, pk) -> JsonResponse:
             status=404,
         )
 
-    match request.method:
-        case "GET":
-            doc = {
-                "id": comment.comment_id,
-                "author": comment.posted_by,
-                "date_time_posted": comment.date_time_posted.isoformat()[:-6],
-                "date_time_edited": comment.date_time_edited.isoformat()[:-6],
-                "content": comment.content,
-            }
-            return JsonResponse(doc)
+    if request.method=="GET":
+        doc = {
+            "id": comment.comment_id,
+            "author": comment.posted_by,
+            "date_time_posted": comment.date_time_posted.isoformat()[:-6],
+            "date_time_edited": comment.date_time_edited.isoformat()[:-6],
+            "content": comment.content,
+        }
+        return JsonResponse(doc)
     
-        case "PUT":
-            try:
-                body = json.loads(request.body)
-                comment.content = body.get("content")
-                comment.save()
-                return JsonResponse({"message": f"Successfully updated article"})
-            except:
-                return JsonResponse(
-                    {"message": f"ID:{pk} - Incomplete data when updating Article"}
-                )
-
-        case "DELETE":
-            try:
-                comment.delete()
-                return JsonResponse({"message": f"ID:{pk} - Element deleted successfully"})
-            except:
-                return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
+    if request.method== "PUT":
+        try:
+            body = json.loads(request.body)
+            comment.content = body.get("content")
+            comment.save()
+            return JsonResponse({"message": f"Successfully updated article"})
+        except:
+            return JsonResponse(
+                {"message": f"ID:{pk} - Incomplete data when updating Article"}
+            )
+    if request.method== "DELETE":
+        try:
+            comment.delete()
+            return JsonResponse({"message": f"ID:{pk} - Element deleted successfully"})
+        except:
+            return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
 
 @csrf_exempt
 def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
@@ -246,8 +242,7 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
             status=404,
         )
 
-    match request.method:
-        case "GET":
+    if request.method == "GET":
             all_comments = []
             for comment in Comment.objects.filter(article=article):
                 doc = {
@@ -261,7 +256,7 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
             all_comments = sorted(all_comments, key=lambda x: x['date_time_edited'], reverse=True)
             return JsonResponse(all_comments, safe=False)
 
-        case "POST":
+    if request.method == "POST":
             try:
                 body = json.loads(request.body)
                 author_name = body.get("author")
