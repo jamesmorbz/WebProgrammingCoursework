@@ -324,8 +324,8 @@ def search(request: HttpRequest) -> JsonResponse:
                 status=404,
             )
 
-@csrf_exempt
-def user(request: HttpRequest) -> JsonResponse:
+# @csrf_exempt
+# def user(request: HttpRequest) -> JsonResponse:
     # if not request.user.is_authenticated:
     #     return JsonResponse(
     #         {"message": "No user logged in"},
@@ -358,4 +358,3 @@ def user(request: HttpRequest) -> JsonResponse:
     #         }
     #         return JsonResponse(user_dict)
     #     case "PUT": #maybe throw exception for requests with password field
-    
