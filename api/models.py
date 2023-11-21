@@ -27,7 +27,7 @@ class User(AbstractUser):
     )
     date_joined = models.DateTimeField("date_joined", auto_now_add=True)
 
-    REQUIRED_FIELDS = ["password"]
+    REQUIRED_FIELDS = ["password", "email"]
 
 
 class Article(models.Model):

@@ -12,59 +12,110 @@ from .models import Article, Comment, User
 from datetime import datetime
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.sessions.models import Session
 
 
-# def registration_view(request: WSGIRequest):
-#     if request.user.is_authenticated:
-#         return redirect("profile")
-#     if request.method == "POST":
-#         form = RegistrationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect("profile")
-#         else:
-#             print(form.error_messages)
-#     else:
-#         form = RegistrationForm()
-#     return render(request, "api/spa/register.html", {"form": form})
+def registration_view(request: WSGIRequest):
+    if request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("/")
+        else:
+            print(form.error_messages)
+    else:
+        form = RegistrationForm()
+    return render(request, "api/spa/register.html", {"form": form})
 
 
-# def login_view(request: WSGIRequest):
-#     if request.user.is_authenticated:
-#         return redirect("profile")
-#     if request.method == "POST":
-#         form = AuthenticationForm(data=request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data.get("username")
-#             password = form.cleaned_data.get("password")
-#             user = authenticate(username=username, password=password)
-#             if user:
-#                 login(request, user)
-#                 return redirect("profile")
-#     else:
-#         form = AuthenticationForm()
-#     return render(request, "api/spa/login.html", {"form": form})
+def login_view(request: WSGIRequest):
+    if request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            clean_data: dict = form.cleaned_data
+            username = clean_data.get("username")
+            password = clean_data.get("password")
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect("/")
+    else:
+        form = AuthenticationForm()
+    return render(request, "api/spa/login.html", {"form": form})
+
+# @login_required()
+@csrf_exempt
+def profile_view(request: WSGIRequest):
+    if request.method == "GET":
+        try:
+            if "sessionid" in request.headers:
+                session_key = request.headers.get("sessionid")
+                session = Session.objects.get(session_key=session_key)
+                uid = session.get_decoded().get('_auth_user_id')
+                user = User.objects.get(pk=uid)
+            else:
+                user: User = request.user
+            profile_data = {
+                "id": user.id,
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+                "profile_picture": user.profile_picture.url if user.profile_picture else None,
+                "favourite_categories": [category.name for category in user.favourite_categories.all()],
+                "date_joined": user.date_joined.isoformat(),
+            }
+            return JsonResponse(profile_data, safe=False)
+        except Exception as e:
+            return JsonResponse(
+                {
+                    "message": f"Unknown error during database operation: {str(e)}",
+                },
+                status=500,
+            )
+        
+    if request.method == "POST":
+        try:
+            body: dict = json.loads(request.body)
+            if "sessionid" in request.headers:
+                session_key = request.headers.get("sessionid")
+                session = Session.objects.get(session_key=session_key)
+                uid = session.get_decoded().get('_auth_user_id')
+                user = User.objects.get(pk=uid)
+            else:
+                user: User = request.user
+
+            user.first_name = body.get("first_name", user.first_name)
+            user.last_name = body.get("last_name", user.last_name)
+            user.email = body.get("last_name", user.last_name)
+            user.date_of_birth = body.get("date_of_birth", user.date_of_birth)
+            # user.profile_pic = body.get("date_of_birth", user.profile_pic)
+            # user.favourites = body.get("date_of_birth", user.favourites)
+
+            user.save()
+
+            return JsonResponse({"message": "Profile updated successfully."})
+        except Exception as e:
+            return JsonResponse(
+                {
+                    "message": f"Error updating profile: {str(e)}",
+                },
+                status=400,
+            )
+
+@login_required()
+def logout_view(request):
+    logout(request)
+    return redirect("login")
 
 
-# # @login_required
-# def profile_view(request: WSGIRequest):
-#     user = request.user
-#     username = user.username
-#     email = user.email
-
-#     context = {
-#         "username": username,
-#         "email": email,
-#     }
-#     return render(request, "api/spa/profile.html", context)
-
-
-# def logout_view(request):
-#     logout(request)
-#     return redirect("login")
-
-
+@login_required()
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, "api/spa/index.html", {})
 
@@ -97,7 +148,7 @@ def articles(request: HttpRequest) -> JsonResponse:
 
     if request.method == "POST":
         try:
-            body = json.loads(request.body)
+            body: dict = json.loads(request.body)
             Article.objects.create(
                 headline=body.get("headline"),
                 author=body.get("author"),
@@ -258,7 +309,7 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
 
     if request.method == "POST":
             try:
-                body = json.loads(request.body)
+                body: dict = json.loads(request.body)
                 author_name = body.get("author")
                 user = User.objects.get(username=author_name)
                 Comment.objects.create(
@@ -281,14 +332,15 @@ def search(request: HttpRequest) -> JsonResponse:
         try:
             headline_matches = []
             content_matches = []
-            search_string = json.loads(request.body).get("search_string").lower()
+            data: dict = json.loads(request.body)
+            search_string: str = data.get("search_string").lower()
             for article in Article.objects.all():
                 if search_string in article.headline.lower():
                     headline_matches.append(article)
                 if search_string in article.content.lower():
                     content_matches.append(article)
             if headline_matches:
-                selected_article = random.choice(headline_matches)
+                selected_article: Article = random.choice(headline_matches)
                 return JsonResponse(
                     {
                         "message": f"Returned randomly selected id based on search string: {search_string} - MATCHED ON HEADLINE",

@@ -164,7 +164,7 @@ export default {
       this.newCommentData = {} as Comments
     },
     formatDate(dateString: any) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
       const parsedDate = new Date(dateString);
       return parsedDate.toLocaleDateString(undefined, options);
     },

@@ -34,7 +34,7 @@ export default defineComponent({
       userAvatar: '',
     }
   },
-  mounted() {
+  created() {
     this.getUserAvatar()
   },
   methods: {

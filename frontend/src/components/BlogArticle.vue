@@ -45,7 +45,7 @@ export default defineComponent({
       if (dateString === undefined) {
         return 'Invalid date';
       }
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
     },
     truncateContent(content: string): string {

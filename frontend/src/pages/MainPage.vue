@@ -36,6 +36,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import BlogArticle from '@/components/BlogArticle.vue'
+import { useProfileStore } from '@/stores/profile';
 
 interface Post {
   id: number
@@ -59,6 +60,7 @@ interface Comments {
 export default defineComponent({
   data() {
     return {
+      currentUser : useProfileStore(), // this store is the same as the store in `Foo.vue`
       title: 'Main Page',
       selectedCategories: [] as string[], // Selected categories for filtering
       showUserFavorites: true, // Flag to show user favorites
@@ -70,6 +72,7 @@ export default defineComponent({
   created() {
     this.fetchArticles()
     this.fetchComments()
+    this.hydrateProfileStore()
   },
   computed: {
     uniqueCategories() {
@@ -97,6 +100,9 @@ export default defineComponent({
     BlogArticle,
   },
   methods: {
+    hydrateProfileStore() {
+      this.currentUser.refresh()
+    },
     reloadData() {
       this.fetchArticles()
       this.fetchComments()
