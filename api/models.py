@@ -43,7 +43,8 @@ class Article(models.Model):
 class Comment(models.Model):
     comment_id = models.AutoField("comment_id", primary_key=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)  # Maybe this should be SET_NULL but I don't know. Need to see what happens during testing
-    date_time_posted = models.DateTimeField("date_time_posted", auto_now_add=True)
-    date_time_edited = models.DateTimeField("date_time_edited", auto_now=True)
+    # Maybe this should be SET_NULL but I don't know. Need to see what happens during testing
+    posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_time_posted = models.DateTimeField(auto_now_add=True)
+    date_time_edited = models.DateTimeField(auto_now=True)
     content = models.TextField("content", editable=True)

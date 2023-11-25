@@ -219,13 +219,15 @@ def comments(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
         all_comments = []
         for comment in Comment.objects.all():
+            date_time_posted_iso = comment.date_time_edited.isoformat()
+            date_time_edited_iso = comment.date_time_edited.isoformat()
             doc = {
                 "id": comment.comment_id,
                 "article_id": comment.article.article_id,
                 "article_headline": comment.article.headline,
                 "author": comment.posted_by.username,
-                "date_time_posted": comment.date_time_posted.isoformat()[:-6],
-                "date_time_edited": comment.date_time_edited.isoformat()[:-6],
+                "date_time_posted": date_time_posted_iso,
+                "date_time_edited": date_time_edited_iso,
                 "content": comment.content,
             }
             all_comments.append(doc)
@@ -250,11 +252,13 @@ def comments_pk(request: HttpRequest, pk) -> JsonResponse:
         )
 
     if request.method=="GET":
+        date_edited_iso = comment.date_time_edited.isoformat()
+        date_time_posted_iso = comment.date_time_edited.isoformat()
         doc = {
             "id": comment.comment_id,
             "author": comment.posted_by,
-            "date_time_posted": comment.date_time_posted.isoformat()[:-6],
-            "date_time_edited": comment.date_time_edited.isoformat()[:-6],
+            "date_time_posted": date_time_posted_iso,
+            "date_time_edited": date_edited_iso,
             "content": comment.content,
         }
         return JsonResponse(doc)
@@ -264,10 +268,10 @@ def comments_pk(request: HttpRequest, pk) -> JsonResponse:
             body = json.loads(request.body)
             comment.content = body.get("content")
             comment.save()
-            return JsonResponse({"message": f"Successfully updated article"})
+            return JsonResponse({"message": f"Successfully updated comment"})
         except:
             return JsonResponse(
-                {"message": f"ID:{pk} - Incomplete data when updating Article"}
+                {"message": f"ID:{pk} - Incomplete data when updating comment"}
             )
     if request.method== "DELETE":
         try:
@@ -296,11 +300,13 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
     if request.method == "GET":
             all_comments = []
             for comment in Comment.objects.filter(article=article):
+                date_time_posted_iso = comment.date_time_edited.isoformat()
+                date_time_edited_iso = comment.date_time_edited.isoformat()
                 doc = {
                     "id": comment.comment_id,
                     "author": comment.posted_by.username,
-                    "date_time_posted": comment.date_time_posted.isoformat()[:-6],
-                    "date_time_edited": comment.date_time_edited.isoformat()[:-6],
+                    "date_time_posted": date_time_posted_iso,
+                    "date_time_edited": date_time_edited_iso,
                     "content": comment.content,
                 }
                 all_comments.append(doc)
@@ -309,7 +315,7 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
 
     if request.method == "POST":
             try:
-                body: dict = json.loads(request.body)
+                body = json.loads(request.body)
                 author_name = body.get("author")
                 user = User.objects.get(username=author_name)
                 Comment.objects.create(
@@ -321,7 +327,7 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
             except:
                 return JsonResponse(
                     {
-                        "message": "Incomplete data. Please provide name, description, price, and is_available."
+                        "message": "Incomplete data when making comment."
                     },
                     status=400,
                 )
