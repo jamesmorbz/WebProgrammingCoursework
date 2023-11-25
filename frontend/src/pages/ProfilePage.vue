@@ -1,84 +1,79 @@
 <template>
-  <div class="flex-shrink-0">
-    <div id="header">
-      <div class="h3">{{ title }}</div>
+  <div class="profile-page">
+    <div class="header">
+      <h1>{{ title }}</h1>
       <p id="smallText">Date Joined: {{ userData.date_joined }}</p>
     </div>
-    <div id="body">
-      <form>
-        <div class="row g-3 mb-3">
-          <div class="col-md-2">
-            <div class="d-flex align-items-start">
-              <img v-if="formData.profile_picture" :src="formData.profile_picture" class="rounded"
-                alt="Preview of uploaded image" id="profile-image-prev" />
-              <img v-else :src="formData.profile_picture" class="rounded" alt="Default Image" id="profile-image-prev" />
-            </div>
-          </div>
+    <form class="profile-form">
+      <div class="form-group">
+        <label for="profile-edit-image" class="form-label">Profile Image</label>
+        <div class="image-center">
+          <img v-if="formData.profile_picture" :src="formData.profile_picture" class="rounded"
+            alt="Preview of uploaded image" id="profile-image-prev" />
+          <img v-else :src="formData.profile_picture" class="rounded" alt="Default Image" id="profile-image-prev" />
         </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-12">
-            <label for="profile-edit-image" class="form-label">Profile Image</label>
-            <div class="input-group">
-              <input class="form-control" type="file" id="formFile" accept="image/*" @change="handleFileChange" />
-              <button class="btn btn-outline-secondary" type="button" id="button-remove" @click="removeUpdatedImage">
-                Remove
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label for="profile-edit-username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="profile-edit-username" v-model="formData.username"
-              placeholder="Please enter a username" required :class="{ 'is-invalid': !isUsernameValid }" />
-            <div v-if="!isUsernameValid" class="invalid-feedback">Invalid username</div>
-          </div>
-          <div class="col-md-6">
-            <label for="profile-edit-full-name" class="form-label">Full Name</label>
-            <input type="text" class="form-control" id="profile-edit-full-name" v-model="fullName" disabled />
-          </div>
-        </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label for="profile-edit-first-name" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="profile-edit-first_name" v-model="formData.first_name"
-              placeholder="Please enter your first name" required :class="{ 'is-invalid': !isFirstNameValid }"/>
-            <div v-if="!isFirstNameValid" class="invalid-feedback">Invalid first name</div>
-          </div>
-          <div class="col-md-6">
-            <label for="profile-edit-full-name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="profile-edit-last-name" v-model="formData.last_name"               
-            placeholder="Please enter your last name" required :class="{ 'is-invalid': !isLastNameValid }"/>
-            <div v-if="!isLastNameValid" class="invalid-feedback">Invalid last name</div>
-          </div>
-        </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label for="profile-edit-email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="profile-edit-email" placeholder="Please enter your email address"
-              v-model="formData.email" required :class="{ 'is-invalid': !isEmailValid }" />
-            <div v-if="!isEmailValid" class="invalid-feedback">Invalid email address</div>
-          </div>
-          <div class="col-md-6">
-            <label for="profile-edit-dob" class="form-label">Date of Birth</label>
-            <input type="date" class="form-control" id="profile-edit-dob" v-model="formData.date_of_birth" />
-          </div>
-        </div>
-        <div class="mb-3">
-          <label for="profile-edit-dob" class="form-label">Categories</label>
-          <!-- <div v-for="(item, index) in categories" :key="item">
-            <CustomCheckbox :category="item" :isChecked="formData.favourite_categories.includes(item)"
-              @checkbox="updateFavourites(index)" />
-          </div> -->
-        </div>
-      </form>
-      <button type="submit" class="btn btn-primary" @click="submitForm">
-        Update Profile
+      </div>
+      <div class="row g-3 mb-3">
+  <div class="col-md-12">
+    <div class="input-group">
+      <input class="form-control" type="file" id="formFile" accept="image/*" @change="handleFileChange" />
+      <button class="btn btn-outline-secondary" type="button" id="button-remove" @click="removeUpdatedImage">
+        Remove
       </button>
     </div>
   </div>
+</div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="profile-edit-username" class="form-label">Username</label>
+          <input type="text" class="form-control" id="profile-edit-username" v-model="formData.username"
+            placeholder="Please enter a username" required :class="{ 'is-invalid': !isUsernameValid }" />
+          <div v-if="!isUsernameValid" class="invalid-feedback">Invalid username (minimum 2 characters)</div>
+        </div>
+        <div class="col-md-6">
+          <label for="profile-edit-full-name" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="profile-edit-full-name" v-model="fullName" disabled />
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="profile-edit-first-name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="profile-edit-first_name" v-model="formData.first_name"
+            placeholder="Please enter your first name" required :class="{ 'is-invalid': !isFirstNameValid }" />
+          <div v-if="!isFirstNameValid" class="invalid-feedback">Invalid first name (minimum 2 characters)</div>
+        </div>
+        <div class="col-md-6">
+          <label for="profile-edit-last-name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="profile-edit-last-name" v-model="formData.last_name"
+            placeholder="Please enter your last name" required :class="{ 'is-invalid': !isLastNameValid }" />
+          <div v-if="!isLastNameValid" class="invalid-feedback">Invalid last name (minimum 2 characters)</div>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="profile-edit-email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="profile-edit-email" placeholder="Please enter your email address"
+            v-model="formData.email" required :class="{ 'is-invalid': !isEmailValid }" />
+          <div v-if="!isEmailValid" class="invalid-feedback">Invalid email address</div>
+        </div>
+        <div class="col-md-6">
+          <label for="profile-edit-dob" class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="profile-edit-dob" v-model="formData.date_of_birth" />
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="profile-edit-dob" class="form-label">Categories</label>
+        <!-- <div v-for="(item, index) in categories" :key="item">
+          <CustomCheckbox :category="item" :isChecked="formData.favourite_categories.includes(item)"
+            @checkbox="updateFavourites(index)" />
+        </div> -->
+      </div>
+      <div class="row g-2 mb-2">
+        <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Update Profile</button>
+      </div>
+    </form>
+  </div>
 </template>
-
 
 <script lang="ts">
 import { defineComponent } from 'vue'
@@ -201,7 +196,7 @@ export default defineComponent({
       // Add additional validation conditions as needed
       this.isUsernameValid = this.formData.username.length >= 2;
       this.isFirstNameValid = this.formData.first_name.length >= 2;
-      this.isFirstNameValid = this.formData.last_name.length >= 2;
+      this.isLastNameValid = this.formData.last_name.length >= 2;
       this.isEmailValid = this.isValidEmail(this.formData.email);
       // Return true if all validations pass
       return this.isUsernameValid && this.isEmailValid;
@@ -218,15 +213,80 @@ export default defineComponent({
 <style scoped>
 #profile-image-prev {
   width: 150px;
+  margin-bottom: 15px;
 }
 
-#header {
-  margin-top: 30px;
-  margin-bottom: 50px;
+.profile-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-#smallText {
-  color: gray;
-  font-size: 14px;
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-form {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Center items horizontally */
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+
+input,
+textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 40px;
+}
+
+.is-invalid {
+  border-color: red;
+}
+
+.invalid-feedback {
+  color: red;
+  margin-top: 5px;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.image-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Center items vertically */
+  align-items: center;
+  /* Center items horizontally */
+}
+
+.justify-content-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
