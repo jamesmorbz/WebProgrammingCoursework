@@ -197,7 +197,8 @@ export default defineComponent({
 .comments-timeline {
   margin-top: 20px;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 2px solid #333;
+  border-radius: 10px;
 }
 
 .comments-timeline h3 {
