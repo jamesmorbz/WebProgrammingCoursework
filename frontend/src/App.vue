@@ -1,5 +1,5 @@
 <template>
-  <main class="container pt-4">
+  <main class="container pt-4" id="main-component">
     <div class="navbar">
       <router-link class="nav-link" :to="{ name: 'MainPage' }">
         <i class="fas fa-home"></i> Main Page
@@ -65,6 +65,7 @@ export default defineComponent({
         //   const data = await response.json();
         //   this.userAvatar = data
         // }
+        //temp
         this.userAvatar = testImage
       } catch (error) {
         console.log('Error fetching user avatar', error);
@@ -79,7 +80,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: rgb(22, 38, 54);
   color: #fff;
   padding: 10px;
 }
@@ -90,10 +91,26 @@ export default defineComponent({
   margin: 0 10px;
   display: flex;
   align-items: center;
+  position: relative; /* Added position relative to make positioning the underline easier */
 }
 
 .nav-link i {
   margin-right: 5px;
+}
+
+.nav-link::after {
+  content: ''; /* Create an empty pseudo-element */
+  display: block; /* Make it a block element */
+  height: 2px; /* Set the height of the underline */
+  width: 0; /* Initially set the width to 0, it will expand on hover */
+  background-color: rgb(216, 231, 247); /* Set the color of the underline */
+  position: absolute; /* Position it absolutely relative to the parent .nav-link */
+  bottom: -2px; /* Position it just below the text */
+  transition: width 0.3s ease; /* Add a transition effect for a smoother appearance */
+}
+
+.nav-link:hover::after {
+  width: 100%; /* Expand the underline to full width on hover */
 }
 
 .profile-preview {
@@ -101,5 +118,12 @@ export default defineComponent({
   height: 30px;
   border-radius: 50%;
   margin-left: 5px;
+}
+
+#main-component {
+  background-color: rgb(216, 231, 247);
+  height: 100vh;
+  min-width: 100vw;
+  box-sizing: border-box;
 }
 </style>
