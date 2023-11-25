@@ -1,74 +1,91 @@
 <template>
   <div class="create-article-page">
     <div class="header">
-      <h1>Create New Article</h1>
+      <h1> {{ title }}</h1>
     </div>
-
-    <form @submit.prevent="submitArticle" class="article-form">
-      <label for="title">Title:</label>
-      <input v-model="newArticle.headline" type="text" id="headline" required />
-
-      <label for="author">Author:</label>
-      <input v-model="newArticle.author" type="text" id="author" required />
-
-      <label for="category">Category:</label>
-      <input v-model="newArticle.category" type="text" id="category" required />
-
-      <label for="content">Content:</label>
-      <textarea v-model="newArticle.content" id="content" required></textarea>
-
-      <p>
-        Current Word Count: {{ currentWordCount }} - Character Count:
-        {{ currentCharacterCount }}
-      </p>
-
-      <button type="submit">Create Article</button>
+    <form class="article-form">
+      <div class="form-group">
+        <label for="headline">Headline:</label>
+        <input v-model="newArticle.headline" type="text" id="headline" required placeholder="Please enter a headline"
+          :class="{ 'is-invalid': !isHeadlineValid }" />
+        <div v-if="!isHeadlineValid" class="invalid-feedback">Invalid headline (minimum 10 characters)</div>
+      </div>
+      <div class="form-group">
+        <label for="author">Author:</label>
+        <input v-model="newArticle.author" type="text" id="author" required placeholder="Please enter author name"
+          :class="{ 'is-invalid': !isAuthorValid }" />
+        <div v-if="!isAuthorValid" class="invalid-feedback">Invalid author name (minimum 2 characters)</div>
+      </div>
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <input v-model="newArticle.category" type="text" id="category" required
+          placeholder="Please enter relevant categories" :class="{ 'is-invalid': !isCategoryValid }" />
+        <div v-if="!isCategoryValid" class="invalid-feedback">Invalid category (minimum 2 characters)</div>
+      </div>
+      <div class="form-group">
+        <label for="content">Content:</label>
+        <textarea v-model="newArticle.content" id="content" required placeholder="Please enter your content"
+          :class="{ 'is-invalid': !isContentValid }"></textarea>
+        <div v-if="!isContentValid" class="invalid-feedback">Invalid content (minimum 10 characters)</div>
+      </div>
+      <div class="row g-2 mb-2">
+        <p>
+          Current Word Count: {{ currentWordCount }} | Character Count: {{ currentCharacterCount }}
+        </p>
+      </div>
+      <div class="row g-2 mb-2 ">
+        <button type="submit" class="btn btn-primary" @click.prevent="submitArticle">Create Article</button>
+      </div>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   data() {
     return {
+      isHeadlineValid: true,
+      isAuthorValid: true,
+      isCategoryValid: true,
+      isContentValid: true,
+      title: "Create New Article",
       newArticle: {
         headline: '',
         author: '',
         category: '',
         content: '',
       },
-    }
+    };
   },
   computed: {
     currentWordCount() {
-      return this.newArticle.content.split(' ').filter((word) => word !== '')
-        .length
+      return this.newArticle.content.split(' ').filter((word) => word !== '').length;
     },
     currentCharacterCount() {
-      return this.newArticle.content.length
+      return this.newArticle.content.length;
     },
   },
   methods: {
     submitArticle() {
-      fetch('http://localhost:8000/api/articles/', {
-        method: 'POST',
-        body: JSON.stringify(this.newArticle),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data)
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-        })
-
-      console.log('New article submitted:', this.newArticle)
-      this.$router.push('/') // redirects you back to the main page
+      if (this.isFormValid()) {
+        // Your fetch logic
+        console.log('New article submitted:', this.newArticle);
+        this.$router.push('/'); // redirects you back to the main page
+      }
+    },
+    isFormValid() {
+      // Add additional validation conditions as needed
+      this.isAuthorValid = this.newArticle.author.length >= 2;
+      this.isHeadlineValid = this.newArticle.headline.length >= 10;
+      this.isCategoryValid = this.newArticle.category.length >= 2;
+      this.isContentValid = this.newArticle.content.length >= 10;
+      // Return true if all validations pass
+      return this.isAuthorValid && this.isHeadlineValid && this.isCategoryValid && this.isContentValid;
     },
   },
-})
+});
 </script>
 
 <style scoped>
@@ -88,8 +105,31 @@ export default defineComponent({
   grid-gap: 10px;
 }
 
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
 label {
   font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 40px;
+}
+
+.is-invalid {
+  border-color: red;
+}
+
+.invalid-feedback {
+  color: red;
+  margin-top: 5px;
 }
 
 button {
