@@ -40,13 +40,16 @@
         </div>
         <div class="row g-3 mb-3">
           <div class="col-md-6">
-            <label for="profile-edit-username" class="form-label">First Name</label>
+            <label for="profile-edit-first-name" class="form-label">First Name</label>
             <input type="text" class="form-control" id="profile-edit-first_name" v-model="formData.first_name"
-              placeholder="Please enter a username" required />
+              placeholder="Please enter your first name" required :class="{ 'is-invalid': !isFirstNameValid }"/>
+            <div v-if="!isFirstNameValid" class="invalid-feedback">Invalid first name</div>
           </div>
           <div class="col-md-6">
             <label for="profile-edit-full-name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="profile-edit-last-name" v-model="formData.last_name" />
+            <input type="text" class="form-control" id="profile-edit-last-name" v-model="formData.last_name"               
+            placeholder="Please enter your last name" required :class="{ 'is-invalid': !isLastNameValid }"/>
+            <div v-if="!isLastNameValid" class="invalid-feedback">Invalid last name</div>
           </div>
         </div>
         <div class="row g-3 mb-3">
@@ -103,6 +106,8 @@ export default defineComponent({
       title: 'Profile Page',
       isUsernameValid: true,
       isEmailValid: true,
+      isFirstNameValid: true,
+      isLastNameValid: true,
       userData: useProfileStore().userData,
       formData: {
         username: 'DEFAULT',
@@ -133,13 +138,15 @@ export default defineComponent({
     this.populateForm()
   },
   methods: {
-    populateForm () {
-    console.log(this.userData.username)
-    this.formData.username = this.userData.username
-    this.formData.email = this.userData.email
-    this.formData.date_of_birth = this.userData.date_of_birth
-    this.formData.favourite_categories = this.userData.favourite_categories
-    this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : defaultAvatar
+    populateForm() {
+      console.log(this.userData.username)
+      this.formData.username = this.userData.username
+      this.formData.first_name = this.userData.first_name
+      this.formData.last_name = this.userData.last_name
+      this.formData.email = this.userData.email
+      this.formData.date_of_birth = this.userData.date_of_birth
+      this.formData.favourite_categories = this.userData.favourite_categories
+      this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : defaultAvatar
     },
     handleFileChange(event: Event) {
       const input = event.target as HTMLInputElement
@@ -185,7 +192,7 @@ export default defineComponent({
             'Content-Type': 'application/json',
             body: JSON.stringify(this.formData)
           }
-        }).then((response) => {console.log(response); this.userData.refresh()});
+        }).then((response) => { console.log(response); this.userData.refresh() });
       } else {
         console.log('Form validation failed');
       }
@@ -193,6 +200,8 @@ export default defineComponent({
     isFormValid() {
       // Add additional validation conditions as needed
       this.isUsernameValid = this.formData.username.length >= 2;
+      this.isFirstNameValid = this.formData.first_name.length >= 2;
+      this.isFirstNameValid = this.formData.last_name.length >= 2;
       this.isEmailValid = this.isValidEmail(this.formData.email);
       // Return true if all validations pass
       return this.isUsernameValid && this.isEmailValid;
