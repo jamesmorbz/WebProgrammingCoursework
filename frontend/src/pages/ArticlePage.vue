@@ -33,6 +33,7 @@
       </button>
 
       <!-- Edit Modal -->
+      <!-- need to add validation -->
       <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -71,7 +72,7 @@
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newCommentModal">
         New Comment
       </button>
-
+      <!-- need to add validation -->
       <div class="modal fade" id="newCommentModal" tabindex="-1" aria-labelledby="newCommentModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -261,11 +262,17 @@ export default {
 
 /* Style for the modal content */
 .modal-content {
-  background-color: #fefefe;
+  background-color: rgb(229, 239, 250);
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Style for the close button */
@@ -282,4 +289,5 @@ export default {
   text-decoration: none;
   cursor: pointer;
 }
+
 </style>
