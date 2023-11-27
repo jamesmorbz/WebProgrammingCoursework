@@ -23,7 +23,7 @@ export const useProfileStore = defineStore('global', {
         fetch(`http://localhost:8000/api/profile/`,
             { credentials: 'same-origin',
             headers: {
-                "sessionid": "1p6kadzbgkut80kstnetywp439k9sdl0",
+                "sessionid": "mll56vo4kin7h00qckjzvblb9fhc5c64",
               } }
           )
           .then((response) => response.json())
