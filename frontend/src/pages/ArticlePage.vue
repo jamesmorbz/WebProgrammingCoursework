@@ -110,6 +110,8 @@
 </template>
 
 <script lang="ts">
+import { useProfileStore } from '@/stores/profile';
+
 interface Post {
   id: number
   headline: string
@@ -143,7 +145,7 @@ export default {
       editedArticle: {} as Post,
       newCommentData: {} as Comments,
       reloadKey: 0,
-      currentUser: "morbz1"
+      currentUser: useProfileStore().userData
     }
   },
   created() {

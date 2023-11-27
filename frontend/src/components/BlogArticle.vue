@@ -10,13 +10,14 @@
     <p v-if="article.content.length > maxContentLength">
       <i><strong>Click to continue Reading...</strong></i>
     </p>
-    <button v-if="article.author == currentUser" @click="deleteArticle(article.id)"
+    <button v-if="article.author == currentUser.username" @click="deleteArticle(article.id)"
       class="btn btn-danger m-2">Delete</button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useProfileStore } from '@/stores/profile';
 
 interface Post {
   id: number
@@ -31,7 +32,7 @@ export default defineComponent({
   data() {
     return {
       maxContentLength: 150,
-      currentUser: "john1"
+      currentUser: useProfileStore().userData
     }
   },
   props: {

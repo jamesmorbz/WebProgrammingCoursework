@@ -14,7 +14,6 @@ from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.models import Session
 
-
 def registration_view(request: WSGIRequest):
     if request.user.is_authenticated:
         return redirect("/")
@@ -29,7 +28,6 @@ def registration_view(request: WSGIRequest):
     else:
         form = RegistrationForm()
     return render(request, "api/spa/register.html", {"form": form})
-
 
 def login_view(request: WSGIRequest):
     if request.user.is_authenticated:
@@ -48,7 +46,7 @@ def login_view(request: WSGIRequest):
         form = AuthenticationForm()
     return render(request, "api/spa/login.html", {"form": form})
 
-# @login_required()
+@login_required()
 @csrf_exempt
 def profile_view(request: WSGIRequest):
     if request.method == "GET":
@@ -93,7 +91,7 @@ def profile_view(request: WSGIRequest):
 
             user.first_name = body.get("first_name", user.first_name)
             user.last_name = body.get("last_name", user.last_name)
-            user.email = body.get("last_name", user.last_name)
+            user.email = body.get("last_name", user.email)
             user.date_of_birth = body.get("date_of_birth", user.date_of_birth)
             # user.profile_pic = body.get("date_of_birth", user.profile_pic)
             # user.favourites = body.get("date_of_birth", user.favourites)
@@ -119,7 +117,7 @@ def logout_view(request):
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, "api/spa/index.html", {})
 
-
+@login_required()
 @csrf_exempt
 def articles(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
@@ -149,9 +147,11 @@ def articles(request: HttpRequest) -> JsonResponse:
     if request.method == "POST":
         try:
             body: dict = json.loads(request.body)
+            user: User = request.user
+        
             Article.objects.create(
                 headline=body.get("headline"),
-                author=body.get("author"),
+                author=user.username,
                 category=body.get("category"),
                 content=body.get("content"),
             )
@@ -163,7 +163,7 @@ def articles(request: HttpRequest) -> JsonResponse:
                 },
                 status=400,
             )
-
+@login_required()
 @csrf_exempt
 def articles_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
@@ -214,6 +214,7 @@ def articles_pk(request: HttpRequest, pk) -> JsonResponse:
         except:
             return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
 
+@login_required()
 @csrf_exempt
 def comments(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
@@ -234,6 +235,7 @@ def comments(request: HttpRequest) -> JsonResponse:
         all_comments = sorted(all_comments, key=lambda x: x['date_time_edited'], reverse=True)
     return JsonResponse(all_comments, safe=False)
     
+@login_required()    
 @csrf_exempt
 def comments_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
@@ -280,6 +282,7 @@ def comments_pk(request: HttpRequest, pk) -> JsonResponse:
         except:
             return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
 
+@login_required()
 @csrf_exempt
 def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
@@ -316,7 +319,9 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
     if request.method == "POST":
             try:
                 body = json.loads(request.body)
-                author_name = body.get("author")
+                user: User = request.user
+                author_name = user.username            
+
                 user = User.objects.get(username=author_name)
                 Comment.objects.create(
                     posted_by=user,
@@ -332,6 +337,7 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
                     status=400,
                 )
 
+@login_required()
 @csrf_exempt
 def search(request: HttpRequest) -> JsonResponse:
     if request.method == "POST":

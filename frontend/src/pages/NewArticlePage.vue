@@ -11,12 +11,6 @@
         <div v-if="!isHeadlineValid" class="invalid-feedback">Invalid headline (minimum 10 characters)</div>
       </div>
       <div class="form-group">
-        <label for="author">Author:</label>
-        <input v-model="newArticle.author" type="text" id="author" required placeholder="Please enter author name"
-          :class="{ 'is-invalid': !isAuthorValid }" />
-        <div v-if="!isAuthorValid" class="invalid-feedback">Invalid author name (minimum 2 characters)</div>
-      </div>
-      <div class="form-group">
         <label for="category">Category:</label>
         <input v-model="newArticle.category" type="text" id="category" required
           placeholder="Please enter relevant categories" :class="{ 'is-invalid': !isCategoryValid }" />
@@ -47,13 +41,11 @@ export default defineComponent({
   data() {
     return {
       isHeadlineValid: true,
-      isAuthorValid: true,
       isCategoryValid: true,
       isContentValid: true,
       title: "Create New Article",
       newArticle: {
         headline: '',
-        author: '',
         category: '',
         content: '',
       },
@@ -77,12 +69,11 @@ export default defineComponent({
     },
     isFormValid() {
       // Add additional validation conditions as needed
-      this.isAuthorValid = this.newArticle.author.length >= 2;
       this.isHeadlineValid = this.newArticle.headline.length >= 10;
       this.isCategoryValid = this.newArticle.category.length >= 2;
       this.isContentValid = this.newArticle.content.length >= 10;
       // Return true if all validations pass
-      return this.isAuthorValid && this.isHeadlineValid && this.isCategoryValid && this.isContentValid;
+      return this.isHeadlineValid && this.isCategoryValid && this.isContentValid;
     },
   },
 });
