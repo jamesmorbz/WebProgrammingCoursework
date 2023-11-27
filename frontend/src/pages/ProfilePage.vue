@@ -184,10 +184,7 @@ export default defineComponent({
         fetch('http://localhost:8000/api/profile/', {
           method: 'POST',
           body: JSON.stringify(this.formData),
-          credentials: 'same-origin',
-            headers: {
-                "sessionid": "mll56vo4kin7h00qckjzvblb9fhc5c64",
-              } 
+          credentials: 'include',
         }).then((response) => { console.log(response); });
       } else {
         console.log('Form validation failed');

@@ -21,11 +21,7 @@ export const useProfileStore = defineStore('global', {
   actions: {
     refresh() {
         fetch(`http://localhost:8000/api/profile/`,
-            { credentials: 'same-origin',
-            headers: {
-                "sessionid": "mll56vo4kin7h00qckjzvblb9fhc5c64",
-              } }
-          )
+            { credentials: 'include', })
           .then((response) => response.json())
           .then((data: any) => {
             this.userData = data
