@@ -1,11 +1,17 @@
 <template>
-  <div class="profile-page">
-    <div class="header">
+  <div class="header">
       <h1>{{ title }}</h1>
       <p id="smallText">Date Joined: {{ userData.date_joined }}</p>
     </div>
+    <div v-for="(picture, index) in profilePictures" :key="index" @click="selectProfilePicture(index)"
+       :class="{ 'selected': index === selectedPicture }">
+    <img :src="picture" alt="Profile Picture" style="width: 100px; height: 100px; cursor: pointer;">
+  </div>
+  <div class="profile-page">
+    
+   
     <form class="profile-form">
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="profile-edit-image" class="form-label">Profile Image</label>
         <div class="image-center">
           <img v-if="formData.profile_picture" :src="formData.profile_picture" class="rounded"
@@ -21,8 +27,8 @@
         Remove
       </button>
     </div>
-  </div>
-</div>
+  </div> -->
+<!-- </div> -->
       <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label for="profile-edit-username" class="form-label">Username</label>
@@ -63,10 +69,10 @@
       </div>
       <div class="mb-3">
         <label for="profile-edit-dob" class="form-label">Categories</label>
-        <!-- <div v-for="(item, index) in categories" :key="item">
+        <div v-for="(item, index) in categories" :key="item">
           <CustomCheckbox :category="item" :isChecked="formData.favourite_categories.includes(item)"
             @checkbox="updateFavourites(index)" />
-        </div> -->
+        </div>
       </div>
       <div class="row g-2 mb-2">
         <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Update Profile</button>
@@ -110,11 +116,23 @@ export default defineComponent({
         date_of_birth: '',
         first_name: 'DEFAULT',
         last_name: 'DEFAULT',
-        favourite_categories: [] as string[],
+        favourite_categories: ['Finance'] as string[],
         profile_picture: '',
       },
+      selectedPicture: null,
       categories: ['Finance', 'Politics', 'Sport', 'Health'],
-      defaultAvatar: defaultAvatar,
+        profilePictures: [
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+        defaultAvatar,
+      ],
     }
   },
   computed: {
@@ -133,6 +151,9 @@ export default defineComponent({
     this.populateForm()
   },
   methods: {
+    selectProfilePicture(index: any) {
+      this.selectedPicture = index;
+    },
     populateForm() {
       console.log(this.userData.username)
       this.formData.username = this.userData.username
@@ -140,7 +161,7 @@ export default defineComponent({
       this.formData.last_name = this.userData.last_name
       this.formData.email = this.userData.email
       this.formData.date_of_birth = this.userData.date_of_birth
-      this.formData.favourite_categories = this.userData.favourite_categories
+      this.formData.favourite_categories = this.userData.favourite_categories ? this.userData.favourite_categories: this.formData.favourite_categories
       this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : defaultAvatar
     },
     handleFileChange(event: Event) {
@@ -213,6 +234,9 @@ export default defineComponent({
   width: 150px;
   margin-bottom: 15px;
 }
+.selected {
+    outline: 2px solid blue; /* You can customize the outline color and style */
+  }
 
 .profile-page {
   max-width: 800px;

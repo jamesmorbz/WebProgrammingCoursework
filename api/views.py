@@ -13,6 +13,7 @@ from datetime import datetime
 from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.models import Session
+from django.contrib import messages
 
 def registration_view(request: WSGIRequest):
     if request.user.is_authenticated:
@@ -21,10 +22,15 @@ def registration_view(request: WSGIRequest):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            return redirect("/")
+            if user:
+                login(request, user)
+                return redirect("/")
+            else:
+                messages.error(request, list(form.errors.values())[0])
+                return render(request, 'api/spa/register.html', context = {'form': form})
         else:
-            print(form.error_messages)
+            messages.error(request, list(form.errors.values())[0])
+            return render(request, 'api/spa/register.html', context = {'form': form})
     else:
         form = RegistrationForm()
     return render(request, "api/spa/register.html", {"form": form})
@@ -39,9 +45,15 @@ def login_view(request: WSGIRequest):
             username = clean_data.get("username")
             password = clean_data.get("password")
             user = authenticate(username=username, password=password)
-            if user:
+            if user is not None:
                 login(request, user)
                 return redirect("/")
+            else:
+                messages.error(request, list(form.errors.values())[0])
+                return render(request, 'api/spa/login.html', context = {'form': form})
+        else:
+            messages.error(request, list(form.errors.values())[0])
+            return render(request, 'api/spa/login.html', context = {'form': form})
     else:
         form = AuthenticationForm()
     return render(request, "api/spa/login.html", {"form": form})
@@ -117,7 +129,6 @@ def logout_view(request):
 def main_spa(request: HttpRequest) -> HttpResponse:
     return render(request, "api/spa/index.html", {})
 
-@login_required()
 @csrf_exempt
 def articles(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
@@ -163,7 +174,7 @@ def articles(request: HttpRequest) -> JsonResponse:
                 },
                 status=400,
             )
-@login_required()
+
 @csrf_exempt
 def articles_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
@@ -214,7 +225,6 @@ def articles_pk(request: HttpRequest, pk) -> JsonResponse:
         except:
             return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
 
-@login_required()
 @csrf_exempt
 def comments(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
@@ -235,7 +245,6 @@ def comments(request: HttpRequest) -> JsonResponse:
         all_comments = sorted(all_comments, key=lambda x: x['date_time_edited'], reverse=True)
     return JsonResponse(all_comments, safe=False)
     
-@login_required()    
 @csrf_exempt
 def comments_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
@@ -282,7 +291,6 @@ def comments_pk(request: HttpRequest, pk) -> JsonResponse:
         except:
             return JsonResponse({"message": f"ID:{pk} - Unable to Delete"}, 500)
 
-@login_required()
 @csrf_exempt
 def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
     try:
@@ -337,7 +345,6 @@ def comments_articles_pk(request: HttpRequest, pk) -> JsonResponse:
                     status=400,
                 )
 
-@login_required()
 @csrf_exempt
 def search(request: HttpRequest) -> JsonResponse:
     if request.method == "POST":

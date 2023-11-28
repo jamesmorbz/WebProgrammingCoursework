@@ -16,9 +16,18 @@
             {{ form.password }}
           </div>
           <button type="submit" class="btn btn-primary">Login</button>
+          {% if messages %}
+        <ul>
+              {% for message in messages %}
+                  <li{% if message.tags %} {% endif %}>{{ message }}</li>
+              {% endfor %}
+        </ul>
+      {% endif %}
         </form>
+        
       </div>
     </div>
+    <a href="/register">Don't have an account? Register here!</a>
   </div>
   <style>
     .form-group label {

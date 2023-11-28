@@ -15,7 +15,7 @@
         <!-- need ajax request to get user image -->
         <img class="profile-preview" :src="userAvatar" alt="Profile Preview" />
       </router-link>
-
+      <a class="nav-link" href="http://localhost:8000/logout">Logout</a>
     </div>
     <RouterView class="flex-shrink-0" />
   </main>
