@@ -13,7 +13,7 @@
       <router-link class="nav-link" :to="{ name: 'ProfilePage' }">
         <i class="fas fa-user-circle"></i> Profile Page
         <!-- need ajax request to get user image -->
-        <img class="profile-preview" :src="userAvatar" alt="Profile Preview" />
+        <img class="profile-preview" :src="currentUserAvatar" alt="Profile Preview" />
       </router-link>
       <a class="nav-link" href="http://localhost:8000/logout">Logout</a>
     </div>
@@ -22,16 +22,50 @@
 </template>
 
 <script lang="ts">
+import { useProfileStore } from '@/stores/profile';
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
-import testImage from './assets/test-avatar.jpg'
+import profilePic1 from '@/assets/profilepic1.jpeg'
+import profilePic2 from '@/assets/profilepic2.jpeg'
+import profilePic3 from '@/assets/profilepic3.jpeg'
+import profilePic4 from '@/assets/profilepic4.jpeg'
+import profilePic5 from '@/assets/profilepic5.jpeg'
+import profilePic6 from '@/assets/profilepic6.jpeg'
+import profilePic7 from '@/assets/profilepic7.jpeg'
+import profilePic8 from '@/assets/profilepic8.jpeg'
+import profilePic9 from '@/assets/profilepic9.jpeg'
+import profilePic10 from '@/assets/profilepic10.jpeg'
+import profilePic11 from '@/assets/profilepic11.jpeg'
+import profilePic12 from '@/assets/profilepic12.jpeg'
+import profilePic13 from '@/assets/profilepic13.jpeg'
+import profilePic14 from '@/assets/profilepic14.jpeg'
+import profilePic15 from '@/assets/profilepic15.jpeg'
+import defaultAvatar from '@/assets/default-avatar-icon.jpg'
 
 export default defineComponent({
   components: { RouterView },
   data() {
     return {
+      currentUser: useProfileStore().userData,
       searchQuery: '',
-      userAvatar: '',
+      userAvatars: {
+        1: profilePic1,
+        2: profilePic2,
+        3: profilePic3,
+        4: profilePic4,
+        5: profilePic5,
+        6: profilePic6,
+        7: profilePic7,
+        8: profilePic8,
+        9: profilePic9,
+        10: profilePic10,
+        11: profilePic11,
+        12: profilePic12,
+        13: profilePic13,
+        14: profilePic14,
+        15: profilePic15,
+      } as any,
+      currentUserAvatar: defaultAvatar
     }
   },
   created() {
@@ -56,20 +90,10 @@ export default defineComponent({
           console.error('Error:', error)
         })
     },
-    async getUserAvatar() {
-      try {
-        // const response = await fetch('getuseravatarurl', {
-        //   method: 'GET',
-        // });
-        // if (response.ok) {
-        //   const data = await response.json();
-        //   this.userAvatar = data
-        // }
-        //temp
-        this.userAvatar = testImage
-      } catch (error) {
-        console.log('Error fetching user avatar', error);
-      }
+    getUserAvatar() {
+        if (this.currentUser.profile_picture in this.userAvatars) {
+          this.currentUserAvatar = this.userAvatars[this.currentUser.profile_picture]
+        }
     },
   },
 })

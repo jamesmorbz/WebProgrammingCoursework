@@ -8,7 +8,7 @@ interface Profile {
   date_joined: string,
   username: string,
   favourite_categories: string[],
-  profile_picture: string,
+  profile_picture: Number,
 }
 
 export const useProfileStore = defineStore('global', {

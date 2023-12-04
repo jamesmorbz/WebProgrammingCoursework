@@ -19,8 +19,8 @@ class User(AbstractUser):
     first_name = models.CharField("first_name", max_length=20, editable=True)
     last_name = models.CharField("last_name", max_length=20, editable=True)
     date_of_birth = models.DateField("DOB", editable=True, null=True, blank=True)
-    profile_picture = models.ImageField(
-        "profile_picture", upload_to="uploads", editable=True, null=True, blank=True
+    profile_picture = models.IntegerField(
+        "profile_picture", editable=True, null=True, blank=True
     )
     favourite_categories = models.ManyToManyField(
         Categories, verbose_name="favourites", editable=True

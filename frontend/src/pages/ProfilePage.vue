@@ -3,32 +3,17 @@
       <h1>{{ title }}</h1>
       <p id="smallText">Date Joined: {{ userData.date_joined }}</p>
     </div>
-    <div v-for="(picture, index) in profilePictures" :key="index" @click="selectProfilePicture(index)"
-       :class="{ 'selected': index === selectedPicture }">
-    <img :src="picture" alt="Profile Picture" style="width: 100px; height: 100px; cursor: pointer;">
-  </div>
-  <div class="profile-page">
-    
-   
-    <form class="profile-form">
-      <!-- <div class="form-group">
-        <label for="profile-edit-image" class="form-label">Profile Image</label>
-        <div class="image-center">
-          <img v-if="formData.profile_picture" :src="formData.profile_picture" class="rounded"
-            alt="Preview of uploaded image" id="profile-image-prev" />
-          <img v-else :src="formData.profile_picture" class="rounded" alt="Default Image" id="profile-image-prev" />
+    <div class="profile-pictures-container">
+      <div class="profile-pictures">
+        <div v-for="(picture, index) in profilePictures" :key="index" @click="selectProfilePicture(index)"
+             :class="{ 'selected': index === selectedPicture }">
+          <img :src="picture" alt="Profile Picture" class="profile-picture" />
         </div>
       </div>
-      <div class="row g-3 mb-3">
-  <div class="col-md-12">
-    <div class="input-group">
-      <input class="form-control" type="file" id="formFile" accept="image/*" @change="handleFileChange" />
-      <button class="btn btn-outline-secondary" type="button" id="button-remove" @click="removeUpdatedImage">
-        Remove
-      </button>
     </div>
-  </div> -->
-<!-- </div> -->
+  <div class="profile-page">
+    
+    <form class="profile-form">
       <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label for="profile-edit-username" class="form-label">Username</label>
@@ -83,9 +68,23 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import defaultAvatar from '../assets/default-avatar-icon.jpg'
-import CustomCheckbox from '../components/CustomCheckbox.vue'
-// import testImage from '../assets/test-avatar.jpg'
+import defaultAvatar from '@/assets/default-avatar-icon.jpg'
+import CustomCheckbox from '@/components/CustomCheckbox.vue'
+import profilePic1 from '@/assets/profilepic1.jpeg'
+import profilePic2 from '@/assets/profilepic2.jpeg'
+import profilePic3 from '@/assets/profilepic3.jpeg'
+import profilePic4 from '@/assets/profilepic4.jpeg'
+import profilePic5 from '@/assets/profilepic5.jpeg'
+import profilePic6 from '@/assets/profilepic6.jpeg'
+import profilePic7 from '@/assets/profilepic7.jpeg'
+import profilePic8 from '@/assets/profilepic8.jpeg'
+import profilePic9 from '@/assets/profilepic9.jpeg'
+import profilePic10 from '@/assets/profilepic10.jpeg'
+import profilePic11 from '@/assets/profilepic11.jpeg'
+import profilePic12 from '@/assets/profilepic12.jpeg'
+import profilePic13 from '@/assets/profilepic13.jpeg'
+import profilePic14 from '@/assets/profilepic14.jpeg'
+import profilePic15 from '@/assets/profilepic15.jpeg'
 import { useProfileStore } from '@/stores/profile';
 // interface Profile {
 //   first_name: string,
@@ -119,19 +118,24 @@ export default defineComponent({
         favourite_categories: ['Finance'] as string[],
         profile_picture: '',
       },
-      selectedPicture: null,
+      selectedPicture: 4,
       categories: ['Finance', 'Politics', 'Sport', 'Health'],
         profilePictures: [
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
-        defaultAvatar,
+        profilePic1,
+        profilePic2,
+        profilePic3,
+        profilePic4,
+        profilePic5,
+        profilePic6,
+        profilePic7,
+        profilePic8,
+        profilePic9,
+        profilePic10,
+        profilePic11,
+        profilePic12,
+        profilePic13,
+        profilePic14,
+        profilePic15,
       ],
     }
   },
@@ -234,6 +238,25 @@ export default defineComponent({
   width: 150px;
   margin-bottom: 15px;
 }
+
+.profile-pictures-container {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+}
+
+.profile-pictures {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columns */
+  gap: 10px; /* Adjust the gap between pictures */
+  justify-content: center; /* Center items horizontally */
+}
+
+.profile-picture {
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+}
+
 .selected {
     outline: 2px solid blue; /* You can customize the outline color and style */
   }
