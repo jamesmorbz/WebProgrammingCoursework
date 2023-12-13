@@ -64,6 +64,11 @@ export default defineComponent({
       if (this.isFormValid()) {
         // Your fetch logic
         console.log('New article submitted:', this.newArticle);
+        fetch('http://localhost:8000/api/articles/', {
+          method: 'POST',
+          body: JSON.stringify(this.newArticle),
+          credentials: 'include',
+        }).then((response) => { console.log(response); });
         this.$router.push('/'); // redirects you back to the main page
       }
     },
@@ -75,6 +80,10 @@ export default defineComponent({
       // Return true if all validations pass
       return this.isHeadlineValid && this.isCategoryValid && this.isContentValid;
     },
+    sleep(ms: any) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+}
+
   },
 });
 </script>

@@ -6,7 +6,7 @@
     <div class="profile-pictures-container">
       <div class="profile-pictures">
         <div v-for="(picture, index) in profilePictures" :key="index" @click="selectProfilePicture(index)"
-             :class="{ 'selected': index === selectedPicture }">
+             :class="{ 'selected': index === formData.profile_picture }">
           <img :src="picture" alt="Profile Picture" class="profile-picture" />
         </div>
       </div>
@@ -116,9 +116,8 @@ export default defineComponent({
         first_name: 'DEFAULT',
         last_name: 'DEFAULT',
         favourite_categories: ['Finance'] as string[],
-        profile_picture: '',
+        profile_picture: -1,
       },
-      selectedPicture: 4,
       categories: ['Finance', 'Politics', 'Sport', 'Health'],
         profilePictures: [
         profilePic1,
@@ -156,7 +155,7 @@ export default defineComponent({
   },
   methods: {
     selectProfilePicture(index: any) {
-      this.selectedPicture = index;
+      this.formData.profile_picture = index;
     },
     populateForm() {
       console.log(this.userData.username)
@@ -166,27 +165,7 @@ export default defineComponent({
       this.formData.email = this.userData.email
       this.formData.date_of_birth = this.userData.date_of_birth
       this.formData.favourite_categories = this.userData.favourite_categories ? this.userData.favourite_categories: this.formData.favourite_categories
-      this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : defaultAvatar
-    },
-    handleFileChange(event: Event) {
-      const input = event.target as HTMLInputElement
-      const file = input.files?.[0]
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          this.formData.profile_picture = e.target?.result as string
-        }
-        reader.readAsDataURL(file)
-      } else {
-        input.value = ''
-        this.formData.profile_picture = ''
-        alert('Please select a valid image file.')
-      }
-    },
-    removeUpdatedImage(event: Event) {
-      const input = event.target as HTMLInputElement
-      input.value = ''
-      this.formData.profile_picture = defaultAvatar
+      this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : -1
     },
     updateFavourites(index: number) {
       const category = this.categories[index];

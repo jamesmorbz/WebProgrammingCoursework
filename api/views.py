@@ -10,7 +10,6 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.contrib.auth.decorators import login_required
 from .models import Article, Comment, User
 from datetime import datetime
-from django.forms.models import model_to_dict
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.models import Session
 from django.contrib import messages
@@ -63,13 +62,7 @@ def login_view(request: WSGIRequest):
 def profile_view(request: WSGIRequest):
     if request.method == "GET":
         try:
-            if "sessionid" in request.headers:
-                session_key = request.headers.get("sessionid")
-                session = Session.objects.get(session_key=session_key)
-                uid = session.get_decoded().get('_auth_user_id')
-                user = User.objects.get(pk=uid)
-            else:
-                user: User = request.user
+            user: User = request.user
             profile_data = {
                 "id": user.id,
                 "username": user.username,
@@ -77,7 +70,7 @@ def profile_view(request: WSGIRequest):
                 "last_name": user.last_name,
                 "email": user.email,
                 "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
-                "profile_picture": user.profile_picture.url if user.profile_picture else None,
+                "profile_picture": user.profile_picture if user.profile_picture else None,
                 "favourite_categories": [category.name for category in user.favourite_categories.all()],
                 "date_joined": user.date_joined.isoformat(),
             }
@@ -93,19 +86,12 @@ def profile_view(request: WSGIRequest):
     if request.method == "POST":
         try:
             body: dict = json.loads(request.body)
-            if "sessionid" in request.headers:
-                session_key = request.headers.get("sessionid")
-                session = Session.objects.get(session_key=session_key)
-                uid = session.get_decoded().get('_auth_user_id')
-                user = User.objects.get(pk=uid)
-            else:
-                user: User = request.user
-
+            user: User = request.user
             user.first_name = body.get("first_name", user.first_name)
             user.last_name = body.get("last_name", user.last_name)
-            user.email = body.get("last_name", user.email)
+            user.email = body.get("email", user.email)
             user.date_of_birth = body.get("date_of_birth", user.date_of_birth)
-            # user.profile_pic = body.get("date_of_birth", user.profile_pic)
+            user.profile_picture = body.get("profile_picture", user.profile_picture)
             # user.favourites = body.get("date_of_birth", user.favourites)
 
             user.save()
@@ -145,6 +131,7 @@ def articles(request: HttpRequest) -> JsonResponse:
                     "date": date_time_edited_iso,
                 }
                 all_articles.append(doc)
+            all_articles = sorted(all_articles, key=lambda x: x["date"], reverse=True)
             return JsonResponse(all_articles, safe=False)
         except:
             return JsonResponse(

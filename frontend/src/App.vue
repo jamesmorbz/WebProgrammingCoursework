@@ -12,7 +12,6 @@
       </div>
       <router-link class="nav-link" :to="{ name: 'ProfilePage' }">
         <i class="fas fa-user-circle"></i> Profile Page
-        <!-- need ajax request to get user image -->
         <img class="profile-preview" :src="currentUserAvatar" alt="Profile Preview" />
       </router-link>
       <a class="nav-link" href="http://localhost:8000/logout">Logout</a>
@@ -49,21 +48,21 @@ export default defineComponent({
       currentUser: useProfileStore().userData,
       searchQuery: '',
       userAvatars: {
-        1: profilePic1,
-        2: profilePic2,
-        3: profilePic3,
-        4: profilePic4,
-        5: profilePic5,
-        6: profilePic6,
-        7: profilePic7,
-        8: profilePic8,
-        9: profilePic9,
-        10: profilePic10,
-        11: profilePic11,
-        12: profilePic12,
-        13: profilePic13,
-        14: profilePic14,
-        15: profilePic15,
+        0: profilePic1,
+        1: profilePic2,
+        2: profilePic3,
+        3: profilePic4,
+        4: profilePic5,
+        5: profilePic6,
+        6: profilePic7,
+        7: profilePic8,
+        8: profilePic9,
+        9: profilePic10,
+        10: profilePic11,
+        11: profilePic12,
+        12: profilePic13,
+        13: profilePic14,
+        14: profilePic15,
       } as any,
       currentUserAvatar: defaultAvatar
     }

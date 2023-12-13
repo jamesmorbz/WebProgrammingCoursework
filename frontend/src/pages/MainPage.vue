@@ -70,9 +70,10 @@ export default defineComponent({
     }
   },
   created() {
+    this.hydrateProfileStore()
     this.fetchArticles()
     this.fetchComments()
-    this.hydrateProfileStore()
+    this.fetchArticles()
   },
   computed: {
     uniqueCategories() {
@@ -104,8 +105,10 @@ export default defineComponent({
       this.currentUser.refresh()
     },
     reloadData() {
+      this.hydrateProfileStore()
       this.fetchArticles()
       this.fetchComments()
+      this.fetchArticles()
     },
     getCommentsForArticle(articleId: number): Comments[] {
       return this.comments.filter((comment) => comment.article_id === articleId);
