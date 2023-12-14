@@ -172,7 +172,7 @@ export default {
       return parsedDate.toLocaleDateString(undefined, options);
     },
     async fetchArticle() {
-      fetch(`http://localhost:8000/api/articles/${this.id}/`)
+      fetch(`/api/articles/${this.id}/`)
         .then((response) => response.json())
         .then((data) => {
           // Handle the data
@@ -186,7 +186,7 @@ export default {
         });
     },
     fetchComments() {
-      fetch(`http://localhost:8000/api/articles/${this.id}/comments/`)
+      fetch(`/api/articles/${this.id}/comments/`)
         .then((response) => response.json())
         .then((data) => {
           this.comments = data
@@ -196,7 +196,7 @@ export default {
         })
     },
     deleteComment(comment_id: Number) {
-      fetch(`http://localhost:8000/api/comments/${comment_id}/`,
+      fetch(`/api/comments/${comment_id}/`,
         { method: 'DELETE' })
         .then((response) => response.json())
         .then((data: any) => {
@@ -219,7 +219,7 @@ export default {
       this.editedArticle = { ...this.article }
     },
     editPost() {
-      fetch(`http://localhost:8000/api/articles/${this.id}/`, {
+      fetch(`/api/articles/${this.id}/`, {
         method: 'PUT',
         body: JSON.stringify(this.editedArticle),
       })
@@ -233,7 +233,7 @@ export default {
         })
     },
     newComment() {
-      fetch(`http://localhost:8000/api/articles/${this.id}/comments/`, {
+      fetch(`/api/articles/${this.id}/comments/`, {
         method: 'POST',
         body: JSON.stringify(this.newCommentData),
       })

@@ -182,7 +182,7 @@ export default defineComponent({
       ) // Extract unique category values from articles
     },
     fetchArticles() {
-      fetch('http://localhost:8000/api/articles/')
+      fetch('/api/articles/')
         .then((response) => response.json())
         .then((data) => {
           this.articles = data
@@ -210,7 +210,7 @@ export default defineComponent({
       // Handle form submission, you can send the formData to the server
       if (this.isFormValid()) {
         // Handle form submission
-        fetch('http://localhost:8000/api/profile/', {
+        fetch('/api/profile/', {
           method: 'POST',
           body: JSON.stringify(this.formData),
           credentials: 'include',

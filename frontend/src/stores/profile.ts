@@ -20,7 +20,7 @@ export const useProfileStore = defineStore('global', {
   },
   actions: {
     refresh() {
-        fetch(`http://localhost:8000/api/profile/`,
+        fetch(`/api/profile/`,
             { credentials: 'include', })
           .then((response) => response.json())
           .then((data: any) => {

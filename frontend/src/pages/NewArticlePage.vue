@@ -64,7 +64,7 @@ export default defineComponent({
       if (this.isFormValid()) {
         // Your fetch logic
         console.log('New article submitted:', this.newArticle);
-        fetch('http://localhost:8000/api/articles/', {
+        fetch('/api/articles/', {
           method: 'POST',
           body: JSON.stringify(this.newArticle),
           credentials: 'include',

@@ -114,7 +114,7 @@ export default defineComponent({
       return this.comments.filter((comment) => comment.article_id === articleId);
     },
     fetchArticles() {
-      fetch('http://localhost:8000/api/articles/')
+      fetch('/api/articles/')
         .then((response) => response.json())
         .then((data) => {
           this.articles = data
@@ -124,7 +124,7 @@ export default defineComponent({
         })
     },
     fetchComments() {
-      fetch('http://localhost:8000/api/comments/')
+      fetch('/api/comments/')
         .then((response) => response.json())
         .then((data) => {
           this.comments = data

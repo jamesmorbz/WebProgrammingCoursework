@@ -55,7 +55,7 @@ export default defineComponent({
         : content
     },
     deleteArticle(article_id: Number) {
-      fetch(`http://localhost:8000/api/articles/${article_id}/`,
+      fetch(`/api/articles/${article_id}/`,
         { method: 'DELETE' })
         .then((response) => response.json())
         .then((data: any) => {

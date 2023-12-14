@@ -14,7 +14,7 @@
         <i class="fas fa-user-circle"></i> Profile Page
         <img class="profile-preview" :key=count :src=currentUserAvatar alt="Profile Preview" />
       </router-link>
-      <a class="nav-link" href="http://localhost:8000/logout">Logout</a>
+      <a class="nav-link" href="/logout">Logout</a>
     </div>
     <RouterView class="flex-shrink-0" />
   </main>
@@ -74,7 +74,7 @@ export default defineComponent({
   methods: {
     performSearch() {
       console.log('Performing search with query:', this.searchQuery)
-      fetch('http://localhost:8000/api/search/', {
+      fetch('/api/search/', {
         method: 'POST',
         body: JSON.stringify({ search_string: this.searchQuery }),
       })
