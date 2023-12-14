@@ -68,7 +68,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import defaultAvatar from '@/assets/default-avatar-icon.jpg'
 import CustomCheckbox from '@/components/CustomCheckbox.vue'
 import profilePic1 from '@/assets/profilepic1.jpeg'
 import profilePic2 from '@/assets/profilepic2.jpeg'
