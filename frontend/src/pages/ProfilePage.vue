@@ -1,28 +1,19 @@
 <template>
-  <div class="profile-page">
-    <div class="header">
+  <div class="header">
       <h1>{{ title }}</h1>
       <p id="smallText">Date Joined: {{ userData.date_joined }}</p>
     </div>
-    <form class="profile-form">
-      <div class="form-group">
-        <label for="profile-edit-image" class="form-label">Profile Image</label>
-        <div class="image-center">
-          <img v-if="formData.profile_picture" :src="formData.profile_picture" class="rounded"
-            alt="Preview of uploaded image" id="profile-image-prev" />
-          <img v-else :src="formData.profile_picture" class="rounded" alt="Default Image" id="profile-image-prev" />
+    <div class="profile-pictures-container">
+      <div class="profile-pictures">
+        <div v-for="(picture, index) in profilePictures" :key="index" @click="selectProfilePicture(index)"
+             :class="{ 'selected': index === formData.profile_picture }">
+          <img :src="picture" alt="Profile Picture" class="profile-picture" />
         </div>
       </div>
-      <div class="row g-3 mb-3">
-  <div class="col-md-12">
-    <div class="input-group">
-      <input class="form-control" type="file" id="formFile" accept="image/*" @change="handleFileChange" />
-      <button class="btn btn-outline-secondary" type="button" id="button-remove" @click="removeUpdatedImage">
-        Remove
-      </button>
     </div>
-  </div>
-</div>
+  <div class="profile-page">
+    
+    <form class="profile-form">
       <div class="row g-3 mb-3">
         <div class="col-md-6">
           <label for="profile-edit-username" class="form-label">Username</label>
@@ -63,10 +54,10 @@
       </div>
       <div class="mb-3">
         <label for="profile-edit-dob" class="form-label">Categories</label>
-        <!-- <div v-for="(item, index) in categories" :key="item">
+        <div v-for="(item, index) in categories" :key="item">
           <CustomCheckbox :category="item" :isChecked="formData.favourite_categories.includes(item)"
             @checkbox="updateFavourites(index)" />
-        </div> -->
+        </div>
       </div>
       <div class="row g-2 mb-2">
         <button type="submit" class="btn btn-primary" @click.prevent="submitForm">Update Profile</button>
@@ -77,9 +68,23 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import defaultAvatar from '../assets/default-avatar-icon.jpg'
-import CustomCheckbox from '../components/CustomCheckbox.vue'
-// import testImage from '../assets/test-avatar.jpg'
+import defaultAvatar from '@/assets/default-avatar-icon.jpg'
+import CustomCheckbox from '@/components/CustomCheckbox.vue'
+import profilePic1 from '@/assets/profilepic1.jpeg'
+import profilePic2 from '@/assets/profilepic2.jpeg'
+import profilePic3 from '@/assets/profilepic3.jpeg'
+import profilePic4 from '@/assets/profilepic4.jpeg'
+import profilePic5 from '@/assets/profilepic5.jpeg'
+import profilePic6 from '@/assets/profilepic6.jpeg'
+import profilePic7 from '@/assets/profilepic7.jpeg'
+import profilePic8 from '@/assets/profilepic8.jpeg'
+import profilePic9 from '@/assets/profilepic9.jpeg'
+import profilePic10 from '@/assets/profilepic10.jpeg'
+import profilePic11 from '@/assets/profilepic11.jpeg'
+import profilePic12 from '@/assets/profilepic12.jpeg'
+import profilePic13 from '@/assets/profilepic13.jpeg'
+import profilePic14 from '@/assets/profilepic14.jpeg'
+import profilePic15 from '@/assets/profilepic15.jpeg'
 import { useProfileStore } from '@/stores/profile';
 // interface Profile {
 //   first_name: string,
@@ -91,6 +96,14 @@ import { useProfileStore } from '@/stores/profile';
 //   favourite_categories: string[],
 //   profile_picture: typeof testImage,
 // }
+interface Post {
+  id: number
+  headline: string
+  content: string
+  author: string
+  category: string
+  date: string
+}
 
 export default defineComponent({
   components: {
@@ -110,11 +123,28 @@ export default defineComponent({
         date_of_birth: '',
         first_name: 'DEFAULT',
         last_name: 'DEFAULT',
-        favourite_categories: [] as string[],
-        profile_picture: '',
+        favourite_categories: ['Finance'] as string[],
+        profile_picture: -1,
       },
       categories: ['Finance', 'Politics', 'Sport', 'Health'],
-      defaultAvatar: defaultAvatar,
+        profilePictures: [
+        profilePic1,
+        profilePic2,
+        profilePic3,
+        profilePic4,
+        profilePic5,
+        profilePic6,
+        profilePic7,
+        profilePic8,
+        profilePic9,
+        profilePic10,
+        profilePic11,
+        profilePic12,
+        profilePic13,
+        profilePic14,
+        profilePic15,
+      ],
+      articles: [] as Post[],
     }
   },
   computed: {
@@ -130,9 +160,13 @@ export default defineComponent({
   created() {
     console.log('Just checking what is in the pinia store')
     console.log(this.userData)
+    this.fetchArticles()
     this.populateForm()
   },
   methods: {
+    selectProfilePicture(index: any) {
+      this.formData.profile_picture = index;
+    },
     populateForm() {
       console.log(this.userData.username)
       this.formData.username = this.userData.username
@@ -140,28 +174,24 @@ export default defineComponent({
       this.formData.last_name = this.userData.last_name
       this.formData.email = this.userData.email
       this.formData.date_of_birth = this.userData.date_of_birth
-      this.formData.favourite_categories = this.userData.favourite_categories
-      this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : defaultAvatar
+      this.formData.favourite_categories = this.userData.favourite_categories ? this.userData.favourite_categories: this.formData.favourite_categories
+      this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : -1
     },
-    handleFileChange(event: Event) {
-      const input = event.target as HTMLInputElement
-      const file = input.files?.[0]
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          this.formData.profile_picture = e.target?.result as string
-        }
-        reader.readAsDataURL(file)
-      } else {
-        input.value = ''
-        this.formData.profile_picture = ''
-        alert('Please select a valid image file.')
-      }
+    uniqueCategories() {
+      this.categories = Array.from(
+        new Set(this.articles.map((article) => article.category)),
+      ) // Extract unique category values from articles
     },
-    removeUpdatedImage(event: Event) {
-      const input = event.target as HTMLInputElement
-      input.value = ''
-      this.formData.profile_picture = defaultAvatar
+    fetchArticles() {
+      fetch('http://localhost:8000/api/articles/')
+        .then((response) => response.json())
+        .then((data) => {
+          this.articles = data
+          this.uniqueCategories()
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     },
     updateFavourites(index: number) {
       const category = this.categories[index];
@@ -213,6 +243,28 @@ export default defineComponent({
   width: 150px;
   margin-bottom: 15px;
 }
+
+.profile-pictures-container {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+}
+
+.profile-pictures {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columns */
+  gap: 10px; /* Adjust the gap between pictures */
+  justify-content: center; /* Center items horizontally */
+}
+
+.profile-picture {
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+}
+
+.selected {
+    outline: 2px solid blue; /* You can customize the outline color and style */
+  }
 
 .profile-page {
   max-width: 800px;

@@ -1,37 +1,71 @@
 <template>
   <main class="container pt-4" id="main-component">
-    <div class="navbar">
-      <router-link class="nav-link" :to="{ name: 'MainPage' }">
+    <div :key=count class="navbar">
+      <router-link @click=increment class="nav-link" :to="{ name: 'MainPage' }">
         <i class="fas fa-home"></i> Main Page
       </router-link>
-      <router-link class="nav-link" :to="{ name: 'NewArticle' }">
+      <router-link @click=increment class="nav-link" :to="{ name: 'NewArticle' }">
         New Article
       </router-link>
       <div class="search-bar">
         <input v-model="searchQuery" type="text" placeholder="Search articles..." @keyup.enter="performSearch" />
       </div>
-      <router-link class="nav-link" :to="{ name: 'ProfilePage' }">
+      <router-link @click=increment class="nav-link" :to="{ name: 'ProfilePage' }">
         <i class="fas fa-user-circle"></i> Profile Page
-        <!-- need ajax request to get user image -->
-        <img class="profile-preview" :src="userAvatar" alt="Profile Preview" />
+        <img class="profile-preview" :key=count :src=currentUserAvatar alt="Profile Preview" />
       </router-link>
-
+      <a class="nav-link" href="http://localhost:8000/logout">Logout</a>
     </div>
     <RouterView class="flex-shrink-0" />
   </main>
 </template>
 
 <script lang="ts">
+import { useProfileStore } from '@/stores/profile';
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
-import testImage from './assets/test-avatar.jpg'
+import profilePic1 from '@/assets/profilepic1.jpeg'
+import profilePic2 from '@/assets/profilepic2.jpeg'
+import profilePic3 from '@/assets/profilepic3.jpeg'
+import profilePic4 from '@/assets/profilepic4.jpeg'
+import profilePic5 from '@/assets/profilepic5.jpeg'
+import profilePic6 from '@/assets/profilepic6.jpeg'
+import profilePic7 from '@/assets/profilepic7.jpeg'
+import profilePic8 from '@/assets/profilepic8.jpeg'
+import profilePic9 from '@/assets/profilepic9.jpeg'
+import profilePic10 from '@/assets/profilepic10.jpeg'
+import profilePic11 from '@/assets/profilepic11.jpeg'
+import profilePic12 from '@/assets/profilepic12.jpeg'
+import profilePic13 from '@/assets/profilepic13.jpeg'
+import profilePic14 from '@/assets/profilepic14.jpeg'
+import profilePic15 from '@/assets/profilepic15.jpeg'
+import defaultAvatar from '@/assets/default-avatar-icon.jpg'
 
 export default defineComponent({
   components: { RouterView },
   data() {
     return {
+      currentUser: useProfileStore().userData,
       searchQuery: '',
-      userAvatar: '',
+      userAvatars: {
+        0: profilePic1,
+        1: profilePic2,
+        2: profilePic3,
+        3: profilePic4,
+        4: profilePic5,
+        5: profilePic6,
+        6: profilePic7,
+        7: profilePic8,
+        8: profilePic9,
+        9: profilePic10,
+        10: profilePic11,
+        11: profilePic12,
+        12: profilePic13,
+        13: profilePic14,
+        14: profilePic15,
+      } as any,
+      currentUserAvatar: defaultAvatar,
+      count: 0 as any,
     }
   },
   created() {
@@ -56,21 +90,17 @@ export default defineComponent({
           console.error('Error:', error)
         })
     },
-    async getUserAvatar() {
-      try {
-        // const response = await fetch('getuseravatarurl', {
-        //   method: 'GET',
-        // });
-        // if (response.ok) {
-        //   const data = await response.json();
-        //   this.userAvatar = data
-        // }
-        //temp
-        this.userAvatar = testImage
-      } catch (error) {
-        console.log('Error fetching user avatar', error);
-      }
+    getUserAvatar() {
+        if (this.currentUser.profile_picture in this.userAvatars) {
+          this.currentUserAvatar = this.userAvatars[this.currentUser.profile_picture]
+        } else {
+          this.currentUserAvatar = defaultAvatar
+        }
     },
+    increment() {
+      this.count +=1 
+      console.log(this.count)
+    }
   },
 })
 </script>
