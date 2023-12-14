@@ -96,6 +96,14 @@ import { useProfileStore } from '@/stores/profile';
 //   favourite_categories: string[],
 //   profile_picture: typeof testImage,
 // }
+interface Post {
+  id: number
+  headline: string
+  content: string
+  author: string
+  category: string
+  date: string
+}
 
 export default defineComponent({
   components: {
@@ -136,6 +144,7 @@ export default defineComponent({
         profilePic14,
         profilePic15,
       ],
+      articles: [] as Post[],
     }
   },
   computed: {
@@ -151,6 +160,7 @@ export default defineComponent({
   created() {
     console.log('Just checking what is in the pinia store')
     console.log(this.userData)
+    this.fetchArticles()
     this.populateForm()
   },
   methods: {
@@ -166,6 +176,22 @@ export default defineComponent({
       this.formData.date_of_birth = this.userData.date_of_birth
       this.formData.favourite_categories = this.userData.favourite_categories ? this.userData.favourite_categories: this.formData.favourite_categories
       this.formData.profile_picture = this.userData.profile_picture ? this.userData.profile_picture : -1
+    },
+    uniqueCategories() {
+      this.categories = Array.from(
+        new Set(this.articles.map((article) => article.category)),
+      ) // Extract unique category values from articles
+    },
+    fetchArticles() {
+      fetch('http://localhost:8000/api/articles/')
+        .then((response) => response.json())
+        .then((data) => {
+          this.articles = data
+          this.uniqueCategories()
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     },
     updateFavourites(index: number) {
       const category = this.categories[index];

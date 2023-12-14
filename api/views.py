@@ -71,7 +71,7 @@ def profile_view(request: WSGIRequest):
                 "email": user.email,
                 "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
                 "profile_picture": user.profile_picture if user.profile_picture else None,
-                "favourite_categories": [category.name for category in user.favourite_categories.all()],
+                "favourite_categories": user.favourite_categories if user.favourite_categories else None,
                 "date_joined": user.date_joined.isoformat(),
             }
             return JsonResponse(profile_data, safe=False)
@@ -92,7 +92,7 @@ def profile_view(request: WSGIRequest):
             user.email = body.get("email", user.email)
             user.date_of_birth = body.get("date_of_birth", user.date_of_birth)
             user.profile_picture = body.get("profile_picture", user.profile_picture)
-            # user.favourites = body.get("date_of_birth", user.favourites)
+            user.favourite_categories = body.get("favourite_categories", user.favourite_categories)
 
             user.save()
 

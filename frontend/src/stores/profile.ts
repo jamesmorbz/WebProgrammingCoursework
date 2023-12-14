@@ -7,7 +7,7 @@ interface Profile {
   date_of_birth: string,
   date_joined: string,
   username: string,
-  favourite_categories: string[],
+  favourite_categories: "",
   profile_picture: Number,
 }
 

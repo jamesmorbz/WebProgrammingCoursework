@@ -1,18 +1,18 @@
 <template>
   <main class="container pt-4" id="main-component">
-    <div class="navbar">
-      <router-link class="nav-link" :to="{ name: 'MainPage' }">
+    <div :key=count class="navbar">
+      <router-link @click=increment class="nav-link" :to="{ name: 'MainPage' }">
         <i class="fas fa-home"></i> Main Page
       </router-link>
-      <router-link class="nav-link" :to="{ name: 'NewArticle' }">
+      <router-link @click=increment class="nav-link" :to="{ name: 'NewArticle' }">
         New Article
       </router-link>
       <div class="search-bar">
         <input v-model="searchQuery" type="text" placeholder="Search articles..." @keyup.enter="performSearch" />
       </div>
-      <router-link class="nav-link" :to="{ name: 'ProfilePage' }">
+      <router-link @click=increment class="nav-link" :to="{ name: 'ProfilePage' }">
         <i class="fas fa-user-circle"></i> Profile Page
-        <img class="profile-preview" :src="currentUserAvatar" alt="Profile Preview" />
+        <img class="profile-preview" :key=count :src=currentUserAvatar alt="Profile Preview" />
       </router-link>
       <a class="nav-link" href="http://localhost:8000/logout">Logout</a>
     </div>
@@ -64,7 +64,8 @@ export default defineComponent({
         13: profilePic14,
         14: profilePic15,
       } as any,
-      currentUserAvatar: defaultAvatar
+      currentUserAvatar: defaultAvatar,
+      count: 0 as any,
     }
   },
   created() {
@@ -92,8 +93,14 @@ export default defineComponent({
     getUserAvatar() {
         if (this.currentUser.profile_picture in this.userAvatars) {
           this.currentUserAvatar = this.userAvatars[this.currentUser.profile_picture]
+        } else {
+          this.currentUserAvatar = defaultAvatar
         }
     },
+    increment() {
+      this.count +=1 
+      console.log(this.count)
+    }
   },
 })
 </script>
